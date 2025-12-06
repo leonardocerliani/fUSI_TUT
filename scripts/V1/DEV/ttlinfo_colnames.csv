@@ -1,0 +1,14 @@
+Channel,Name
+1,Time
+2,ch_2
+3,Events
+4,ShockOBSCTLStim
+5,ShockTailStim
+6,AdjustPDItime
+7,ch_7
+8,ch_8
+9,ch_9
+10,VisualStim
+11,AuditoryStim
+12,Shock
+13,ch_13
