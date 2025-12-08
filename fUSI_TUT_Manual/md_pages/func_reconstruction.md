@@ -43,8 +43,6 @@ run-115047/
 ```
 
 
-## Current issues
-See below
 
 ## TTLinfo column names
 Right now we can identify the columns using their name. This uses the `TTLinfo_colNames.m` and `ttlcol.m` files in `Utils_LC`.
@@ -91,3 +89,62 @@ There are still many things unclear about the processing in this script, but we 
 
 - when I load the functional data, several errors are thrown in the section of the laganalysis
 - otherwise it looks like the pdi.mat is created, but how can I check whether all the information are in there?
+
+
+
+## Explanation of the single parts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

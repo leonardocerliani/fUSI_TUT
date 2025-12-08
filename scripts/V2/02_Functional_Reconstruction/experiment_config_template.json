@@ -1,0 +1,14 @@
+{
+  "experiment_id": "run-XXXXXX-func",
+  "date": "YYYY-MM-DD",
+  "description": "Brief description of your experiment",
+  
+  "ttl_channels": {
+    "pdi_frame": 3,
+    "experiment_start": 6,
+    "experiment_start_fallback": 5,
+    "shock": [4, 5, 12],
+    "visual": 10,
+    "auditory": 11
+  }
+}

@@ -1,7 +1,5 @@
-allen_brain_atlas.zip
 data/
-data_raw.zip
+atlas_and_rawdata/
 scripts/V0*/
 .DS_Store
 videos/
-rsync_with_storm/
