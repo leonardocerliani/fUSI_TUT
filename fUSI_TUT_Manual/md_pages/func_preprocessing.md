@@ -114,3 +114,5 @@ In the script there is a second type of preprocessing after the first one, with 
 
 ### Spatial smoothing
 
+
+
