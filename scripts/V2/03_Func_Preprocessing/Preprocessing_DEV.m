@@ -1,5 +1,5 @@
 %% Preprocessing optimization 
-clear;clc;
+
 [subDataPath,subAnatPath,~] = Datapath_DEV('VisualTest'); % load the paths to all data
 
 load allen_brain_atlas.mat
@@ -41,7 +41,8 @@ subRegions = subAtlas.Region.Data(:,:,anatomic.funcSlice(3));
 bmask = double(subRegions > 1);
 
 % Dilate the mask
-se = strel('disk', 2); % Structuring element, radius 2
+dilatation_radius = 2;
+se = strel('disk', dilatation_radius);
 bmask = imdilate(bmask, se);
 
 % Store it in PDI
@@ -89,7 +90,7 @@ sgtitle('Subject Anatomy with Brain Mask Overlay');
 
 %% Rigid in-plane motion correction
 
-ref = median(PDI.PDI,3);% median-run reference
+ref = median(PDI.PDI,3); % median image from the functionl run
 
 [nY, nX, nFrames] = size(PDI.PDI);
 cPDI = zeros(nY, nX, nFrames, 'like', PDI.PDI); % preallocation for speed
@@ -124,11 +125,12 @@ PDI.voxelFrameRjection.ratio = sum(maskG(:))/numel(crPDI.PDI );
 
 
 %% Convert to percent-signal change (for GLM) 
-mu   = repmat(mean(crPDI.PDI,3),1,1,size(PDI.PDI,3));
+n_Frames = size(PDI.PDI,3);
+mu   = repmat(mean(crPDI.PDI,3),1,1,n_Frames);
 PDI.PDI   = (crPDI.PDI-mu)./mu.*100;
 
 
-%% Convert to zscore (for ISC analysis)
+% Convert to zscore (for ISC analysis)
 % PDI.PDI = zscore(PDI.PDI,0,3);
 
 
@@ -138,20 +140,19 @@ PDI = resamplePDI(PDI,resampling_rate);
 
 
 %% Temporal highpass filtering 
-PDI.PDI = DCThighpass(PDI.PDI,5,500);
+cutoff_in_seconds = 500;
+PDI.PDI = DCThighpass(PDI.PDI,5,cutoff_in_seconds);
 
 
 %% Spatial smoothing 
 PDI.spatialSigma = 1; % gaussian kernel with 1 sd (FWHM = 2.355 * σ)
-for ii = 1:size(PDI.PDI,3)
+n_Frames = size(PDI.PDI,3);
+for ii = 1:n_Frames
     PDI.PDI(:,:,ii) = imgaussfilt(squeeze(PDI.PDI(:,:,ii)),PDI.spatialSigma);%Reduce noise and smooth the function
 end
 
 
 %% Save the preprocessed data
-
-% % originally saved in a `Functional` subfolder. Ask why
-% parsave([subDataPath{isub} filesep 'Functional' filesep 'prepPDI.mat'],PDI);
 
 % now I simply save in the original data_analysis dir
 parsave([subDataPath{isub} filesep 'prepPDI.mat'],PDI);
