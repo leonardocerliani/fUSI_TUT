@@ -130,7 +130,7 @@ save(fullfile(anatomic_dir, 'anatomic_2_atlas.mat'), 'anatomic_2_atlas');
 % -----------------------------------------------
 
 % Check that atlas.nii exists
-atlas_nii_path = which('atlas.nii');
+atlas_nii_path = which('atlas.nii.gz');
 
 if isempty(atlas_nii_path)
     error('atlas.nii not found. Ensure it is on the MATLAB path.');
@@ -150,21 +150,24 @@ end
 % ------------------------------
 % Visualize 16 slices
 % ------------------------------
+
+% Coronal
 figure('Color', 'w');
 numSlices = 16;
-step = round(size(warpedAnatomic,3)/numSlices);
+step = round(size(warpedAnatomic,2) / numSlices);
 
 for i = 1:numSlices
     sliceIdx = (i-1)*step + 1;
     subplot(4,4,i);
 
-    % Show atlas histology in grayscale
-    histSlice = atlas.Histology(:,:,sliceIdx);
+    % Coronal histology slice
+    histSlice = squeeze(atlas.Histology(:, sliceIdx, :));
     imshow(histSlice, [], 'InitialMagnification', 'fit');
     hold on;
 
-    % Overlay transformed anatomy
-    anatSlice = warpedAnatomic(:,:,sliceIdx);
+    % Coronal anatomy slice
+    anatSlice = squeeze(warpedAnatomic(:, sliceIdx, :));
+
     if any(anatSlice(:))
         anat_norm = mat2gray(anatSlice);
         anat_rgb = ind2rgb(im2uint8(anat_norm), hot(256));
@@ -173,11 +176,43 @@ for i = 1:numSlices
         set(h, 'AlphaData', alphaData);
     end
 
-    title(['Slice ' num2str(sliceIdx)]);
+    title(['Coronal slice ' num2str(sliceIdx)]);
     axis image off;
 end
 
-sgtitle('Warped Anatomy Overlaid on Atlas Histology');
+
+% % Sagittal
+% % ------------------------------
+% % Visualize 16 slices
+% % ------------------------------
+% figure('Color', 'w');
+% numSlices = 16;
+% step = round(size(warpedAnatomic,3)/numSlices);
+% 
+% for i = 1:numSlices
+%     sliceIdx = (i-1)*step + 1;
+%     subplot(4,4,i);
+% 
+%     % Show atlas histology in grayscale
+%     histSlice = squeeze(atlas.Histology(:,:,sliceIdx));
+%     imshow(histSlice, [], 'InitialMagnification', 'fit');
+%     hold on;
+% 
+%     % Overlay transformed anatomy
+%     anatSlice = warpedAnatomic(:,:,sliceIdx);
+%     if any(anatSlice(:))
+%         anat_norm = mat2gray(anatSlice);
+%         anat_rgb = ind2rgb(im2uint8(anat_norm), hot(256));
+%         alphaData = 0.5 * (anatSlice > 0);
+%         h = imshow(anat_rgb);
+%         set(h, 'AlphaData', alphaData);
+%     end
+% 
+%     title(['Slice ' num2str(sliceIdx)]);
+%     axis image off;
+% end
+% 
+% sgtitle('Warped Anatomy Overlaid on Atlas Histology');
 
 
 % end of function

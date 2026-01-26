@@ -49,6 +49,7 @@ function PDI = do_reconstruct_functional(datapath, savepath)
     fprintf('\n→ Loading core data files:\n');
     [pdiData, scanParams, ttlData, nidaqLog] = load_core_data(datapath, config);
     
+    % fun_plot.plotTTL(ttlData)
 
 
     %% Step 4: Timeline synchronization

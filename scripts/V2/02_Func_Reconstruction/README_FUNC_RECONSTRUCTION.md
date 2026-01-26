@@ -5,6 +5,93 @@ Modular, configurable pipeline for converting raw fUSI data to structured MAT fo
 
 **Main Script**: `do_reconstruct_functional.m`
 
+## Three main procedures:
+
+### 1. Reconstructing a 3D pdi
+Starting from the binary file `fUS_block_PDI_float.bin`, we use the `L22-14_PlaneWave_FUSI_data.mat` (in the script is `BFconfig`) to detect the shape of the 3D data, reshape the binary and store it in a struct.
+
+### 2. Assigning time stamps
+The `TTL*.csv` file contains the time stamp of many events in the experiment, including the pdi acquisition as well as other events such as stimuli. This allows to establish a common temporal reference.
+
+We use a specific channel (usually ch3) in the TTL data to get the timing of the pdi frame acquisition.
+
+```
+TTL ch3 --> detect falling edges --> record the row of TTL --> PDITTL --> should correspond to size(pdiData,3)
+
+reconcile number of PDITTL with number of pdfFRAMES
+
+Extract time stamp of each frame with PDItime = ttlData(PDITTL, 1)
+
+Remove all the frames before the first presentation, so that this occurs at time = 0. This involves:
+- removing pre-experiment data from ttlData
+- shift time stamps in ttlData to t=0
+- remove frames with negative time stamps in pdiData
+```
+
+### 3. Assign time stamps to other events
+This is to detect which stimuli were presented in the current session, and to add them as well other measurements - e.g. wheel - to the final `PDI.mat`.
+
+
+ 
+ ```
+ do_reconstruct_functional.m
+│
+├─ STEP 3: Load core data
+│  │
+│  └─ load_core_data()                    [src/io/]
+│      └─ Reads: BFConfig MAT files
+│                fUS_block_PDI_float.bin
+│                TTL*.csv
+│                DAQ.csv (or NIDAQ.csv)
+│
+├─ STEP 4: Timeline synchronization
+│  │
+│  └─ synchronize_timeline()               [src/sync/]
+│      ├─ detect_ttl_edges()               [src/processing/]
+│      │
+│      └─ LagAnalysisFusi() (optional)     [external function]
+│          └─ Analyzes IQ/RF files if available
+│
+├─ STEP 5a: Detect and load stimulation
+│  │
+│  └─ detect_and_load_stimulation()        [src/events/]
+│      ├─ extract_visual_events()          [src/events/]
+│      │   └─ detect_ttl_edges()           [src/processing/]
+│      │
+│      ├─ extract_shock_events()           [src/events/]
+│      │   └─ detect_ttl_edges()           [src/processing/]
+│      │
+│      └─ extract_auditory_events()        [src/events/]
+│          └─ detect_ttl_edges()           [src/processing/]
+│
+├─ STEP 5b: Detect and load behavioral
+│  │
+│  └─ detect_and_load_behavioral()         [src/io/]
+│      └─ Reads: RunningWheel.csv
+│                GSensor.csv
+│                flir_camera_time.csv
+│
+├─ STEP 6: Assemble and save
+│  │
+│  ├─ build_pdi_structure()                [src/assembly/]
+│  │   └─ Assembles all data into PDI struct
+│  │
+│  └─ save_pdi_data()                      [src/assembly/]
+│      └─ Saves PDI.mat file
+│
+└─ STEP 7: Final summary
+   │
+   └─ print_final_summary()                [src/utils/]
+       └─ Displays processing results
+```
+
+
+
+
+
+
+
+
 ## Key Features
 - **Minimal configuration**: Only TTL channels need to be specified
 - **Auto-detection**: Automatically finds available stimulation and behavioral data

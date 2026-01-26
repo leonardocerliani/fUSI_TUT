@@ -2,10 +2,14 @@ function [pdiData, pdiTime, scanParams] = synchronize_timeline(pdiData, scanPara
     % SYNCHRONIZE_TIMELINE Align PDI frames with TTL timing
     %
     %   [pdiData, pdiTime, scanParams] = synchronize_timeline(pdiData, scanParams, ttlData, config, datapath)
-    
+    %
+    % The whole purpose of this script is to assign a certain time stamp (from ttlData) to each
+    % pdi frame (in pdiData).
+    % In this way we can have a common reference between pdi data and other events (e.g. stimuli)
+
     ttl = config.ttl_channels;
     
-    % Detect PDI frame markers
+    % Detect PDI frame markers (rows of ttlData)
     PDITTL = detect_ttl_edges(ttlData, ttl.pdi_frame, 'falling');
     numPDITTL = numel(PDITTL);
     numPDIframes = size(pdiData, 3);
@@ -125,6 +129,8 @@ function [pdiData, pdiTime, scanParams] = synchronize_timeline(pdiData, scanPara
         blockDuration = mode(diff(PDItime));
     end
     
+
+
     % Adjust PDItime: shift forward by mean frame interval
     PDItime = PDItime + mean(diff(PDItime));
     
