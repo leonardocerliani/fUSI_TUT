@@ -32,8 +32,9 @@ Remove all the frames before the first presentation, so that this occurs at time
 This is to detect which stimuli were presented in the current session, and to add them as well other measurements - e.g. wheel - to the final `PDI.mat`.
 
 
+## Dependencies
  
- ```
+```
  do_reconstruct_functional.m
 │
 ├─ STEP 3: Load core data
