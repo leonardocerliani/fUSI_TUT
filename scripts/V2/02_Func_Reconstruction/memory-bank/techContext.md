@@ -111,7 +111,7 @@
 3. Filter frames with irregular timing: `acceptIndex`
 4. Align corrected times with TTL: `TTLinfo(PDITTL(1), 1) + timeTagsSec`
 
-### 3. Timeline Alignment
+### 3. Timeline Alignment and Synchronization
 All data streams must share a common time reference:
 
 **Steps**:
@@ -120,6 +120,15 @@ All data streams must share a common time reference:
 3. Shift all timestamps so first acquisition = t=0
 4. Shift PDI times forward by mean frame interval (accounts for acquisition duration)
 5. Remove negative-time frames from PDI data
+
+**Critical Synchronization Note**:
+- The DAQ recording (DAQ.csv) is started at the experiment start marker
+- `NIDAQInfo.time(1)` is synchronized to the TTL experiment start marker
+- This makes `NIDAQInfo.time(1)` a valid proxy for experiment start when:
+  - TTL stimulus channel information is missing
+  - CSV fallback is needed for event timing
+- Both TTL-based and CSV-based event extraction produce times relative to the same reference point
+- No additional alignment correction is needed between TTL and CSV paths
 
 ### 4. Data Reshaping
 Binary PDI data is 1D but represents 3D spatiotemporal data:

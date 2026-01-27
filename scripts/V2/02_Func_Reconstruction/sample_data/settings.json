@@ -1,0 +1,104 @@
+{
+    "sensor_config": {
+        "gsensor": {
+            "serial_port": "COM5",
+            "baud_rate": 115200,
+            "frame_rate": 60.0,
+            "enabled": true,
+            "label": "G Sensor",
+            "sensor_type": "gsensor"
+        },
+        "runningwheel": {
+            "serial_port": "COM4",
+            "baud_rate": 115200,
+            "frame_rate": 60.0,
+            "enabled": true,
+            "label": "Running Wheel",
+            "sensor_type": "runningwheel"
+        },
+        "demo_camera": {
+            "camera_type": "bassler",
+            "fps": 24.0,
+            "serial_number": "22774846",
+            "exposure": 3000,
+            "trigger_source": "Line1",
+            "enabled": false,
+            "label": "Demo Camera",
+            "sensor_type": "camera"
+        },
+        "body_camera": {
+            "camera_type": "bassler",
+            "fps": 24.0,
+            "serial_number": "23118476",
+            "exposure": 3000,
+            "trigger_source": "Line1",
+            "enabled": false,
+            "label": "Body Camera",
+            "sensor_type": "camera"
+        },
+        "pupil_camera": {
+            "camera_type": "flir",
+            "fps": 24.0,
+            "exposure": 3000,
+            "trigger_source": "Line1",
+            "enabled": false,
+            "label": "Pupil Camera",
+            "sensor_type": "camera"
+        },
+        "microphone": {
+            "info": "No options to set, mic is controlled from Avisoft. program has to be lauched before GUI launch, and microphone will be triggered",
+            "enabled": false,
+            "label": "Microphone",
+            "sensor_type": "none"
+        }
+    },
+    "stim_config": {
+        "visual": {
+            "pattern_type": "grating_angles",
+            "grating_spatial_frequency": 7.0,
+            "grating_period": 0.5,
+            "flicker_blink_rate": 5.0,
+            "grating_angles": "[0, 45, 90, 135, 180, 225, 270, 315]",
+            "grating_angle_period": 1.0,
+            "enabled": true,
+            "label": "Visual Stimulation",
+            "stimulation_type": "visual"
+        },
+        "shock": {
+            "info": "No options to set, shockers are controlled on the boxes themselves. Only timing information and shock duration can be set.",
+            "enabled": false,
+            "label": "Shock Stimulation",
+            "stimulation_type": "shock"
+        },
+        "audio": {
+            "tone_frequency": 500.0,
+            "enabled": false,
+            "label": "Audio Stimulation",
+            "stimulation_type": "audio"
+        }
+    },
+    "timing_config": {
+        "timing_file": "visual_Maresca_10x.txt"
+    },
+    "motor_config": {
+        "from": 2.0,
+        "to": 10.0,
+        "step": 0.5,
+        "current": 4.75,
+        "framesperslice": 1.0,
+        "acqtimepdi": 0.2
+    },
+    "log": {
+        "output_path": "./data",
+        "project_name": "test_project",
+        "subject_name": "methods02",
+        "subject_awake": true,
+        "subject_implant": true,
+        "notes": "",
+        "probe_depth": "17.80",
+        "probe_lateral": "14.07",
+        "probe_rotation": "24.5",
+        "headplate_tilt_ap": "",
+        "headplate_tilt_ml": ""
+    }
+}

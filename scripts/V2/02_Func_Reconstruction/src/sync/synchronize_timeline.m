@@ -1,7 +1,7 @@
-function [pdiData, pdiTime, scanParams] = synchronize_timeline(pdiData, scanParams, ttlData, config, datapath)
+function [pdiData, pdiTime, scanParams, ttlData] = synchronize_timeline(pdiData, scanParams, ttlData, config, datapath)
     % SYNCHRONIZE_TIMELINE Align PDI frames with TTL timing
     %
-    %   [pdiData, pdiTime, scanParams] = synchronize_timeline(pdiData, scanParams, ttlData, config, datapath)
+    %   [pdiData, pdiTime, scanParams, ttlData] = synchronize_timeline(pdiData, scanParams, ttlData, config, datapath)
     %
     % The whole purpose of this script is to assign a certain time stamp (from ttlData) to each
     % pdi frame (in pdiData).

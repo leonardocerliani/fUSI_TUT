@@ -54,7 +54,7 @@ function PDI = do_reconstruct_functional(datapath, savepath)
 
     %% Step 4: Timeline synchronization
     fprintf('\n→ Timeline synchronization:\n');
-    [pdiData, pdiTime, scanParams] = synchronize_timeline(pdiData, scanParams, ttlData, config, datapath);
+    [pdiData, pdiTime, scanParams, ttlData] = synchronize_timeline(pdiData, scanParams, ttlData, config, datapath);
     
 
     
@@ -63,7 +63,7 @@ function PDI = do_reconstruct_functional(datapath, savepath)
     stimInfo = detect_and_load_stimulation(datapath, ttlData, nidaqLog, config);
     
     fprintf('\n→ Detected behavioral data:\n');
-    behavioral = detect_and_load_behavioral(datapath, nidaqLog);
+    behavioral = detect_and_load_sensors(datapath, nidaqLog);
     
 
 

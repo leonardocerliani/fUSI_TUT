@@ -28,8 +28,8 @@ function events = extract_visual_events(datapath, ttlData, nidaqLog, visualChann
             stimData = readtable(csvPath);
             stimData.time = stimData.time - nidaqLog.time(1);
             
-            startTimes = stimData.time(strcmp('stim', stimData.stim));
-            endTimes = stimData.time(strcmp('black', stimData.stim));
+            startTimes = stimData.time(strcmp('stim', stimData.event));
+            endTimes = stimData.time(strcmp('blank', stimData.event));
         end
     end
     

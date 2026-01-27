@@ -161,8 +161,21 @@ The pipeline automatically detects:
 
 The refactored pipeline is:
 - ✅ Fully functional
-- ✅ Tested on real data
+- ✅ Tested on real data (visual stimulation)
 - ✅ Documented
 - ✅ Ready for daily use
+
+### ⚠️ Pending Validation (When Test Data Available)
+
+**Auditory Stimulation Extraction** - Discrepancies identified that need validation:
+1. Filename: Original uses `AudioStimulation.csv`, refactored uses `auditoryStimulation.csv`
+2. Column name: Original uses `event` column, refactored uses `stim` column
+3. Event markers: Original uses `'audio'`, refactored uses `'audio_start'`/`'audio_stop'`
+4. End time calculation: Original calculates from duration, refactored expects separate stop events
+
+**Shock Stimulation Extraction** - Minor discrepancy:
+1. Column name: Original uses `stimInfo.event`, refactored uses `stimInfo.type`
+
+**Action Required:** When datasets with auditory or shock stimulation become available, test these extraction functions and align the refactored version with the actual CSV file formats used in the lab.
 
 **No further development required unless optional enhancements desired.**

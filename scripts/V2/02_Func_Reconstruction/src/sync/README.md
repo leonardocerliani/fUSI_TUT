@@ -24,6 +24,7 @@ The `synchronize_timeline.m` script assigns timestamps to PDI frames, creating a
 - `pdiData` - Same array, possibly trimmed to match TTL markers
 - `pdiTime` - Timestamp for each frame [nt × 1], aligned to t=0
 - `scanParams` - Updated with frame interval (dt)
+- `ttlData` - Modified TTL array with pre-experiment data removed and timestamps shifted to t=0 (CRITICAL: must be returned for event extraction to work correctly)
 
 ---
 
@@ -173,6 +174,29 @@ Final result enables questions like:
 - "How did behavior correlate with brain responses?"
 
 All possible because PDI frames, stimuli, and behavior share the same t=0 reference.
+
+### DAQ-TTL Synchronization (Critical for Event Extraction)
+
+**Important**: The DAQ recording (DAQ.csv/NIDAQ.csv) is synchronized with TTL timing:
+
+```
+Hardware Setup:
+- DAQ recording starts at (or very close to) experiment start marker
+- NIDAQInfo.time(1) represents the same reference point as TTL experiment start
+```
+
+**Implication for Event Extraction**:
+When TTL stimulus information is missing, CSV files (VisualStimulation.csv, etc.) can be aligned using:
+```matlab
+stimInfo.time = stimInfo.time - NIDAQInfo.time(1);
+```
+
+This produces times relative to the same experiment start as TTL-based events, ensuring:
+- No additional correction needed
+- TTL and CSV paths produce equivalent timestamps
+- Both methods reference the same t=0
+
+**Why this matters**: Event extraction modules can safely fall back to CSV timing when TTL channels don't record stimulus information, without introducing alignment errors.
 
 ---
 

@@ -116,27 +116,36 @@ startTimes = TTLinfo(startIndices, 1);
 - Stimulation onset/offset
 - First acquisition event
 
-### Pattern 3: Dual-Source Data Resolution
-**Principle**: Try primary source, fall back to secondary if needed
+### Pattern 3: Dual-Source Data Resolution with Synchronized References
+**Principle**: Try primary source (TTL), fall back to secondary (CSV) if needed
+
+**Critical Design Note**: The DAQ.csv first timestamp (`NIDAQInfo.time(1)`) is synchronized to the experiment start marker determined from TTL. This makes it a valid proxy for the experiment start when TTL stimulus information is missing.
 
 **Implementation**:
 ```matlab
-% Try multiple file names
-scanParamFiles = {'post_L22-14_PlaneWave_FUSI_data.mat', ...
-                  'L22-14_PlaneWave_FUSI_data.mat'};
-for i = 1:length(scanParamFiles)
-    if exist(fullfile(path, scanParamFiles{i}), 'file')
-        data = load(fullfile(path, scanParamFiles{i}));
-        break;
-    end
+% Primary path: Use TTL timing (preferred)
+startTimes = ttlData(startIndices, 1);  // Already aligned to experiment start
+
+% Fallback: Use CSV timing when TTL missing
+if isempty(startTimes)
+    stimInfo.time = stimInfo.time - NIDAQInfo.time(1);  // Valid: DAQ synced to exp start
+    startTimes = stimInfo.time(strcmp('stim', stimInfo.stim));
 end
 ```
+
+**Why This Works**:
+- DAQ recording is started at (or very close to) the experiment start marker
+- `NIDAQInfo.time(1)` represents the same reference point as TTL experiment start
+- Both paths produce times relative to the same experiment start
+- No additional alignment correction needed
 
 **Applied To**:
 - Scan parameter files (post_ vs regular)
 - NIDAQ files (NIDAQ.csv vs DAQ.csv)
 - Visual stimulation (TTL vs CSV timing)
 - Auditory stimulation (TTL vs CSV timing)
+- Running wheel data alignment
+- G-sensor data alignment
 
 ### Pattern 4: Frame Count Reconciliation
 **Principle**: Handle mismatch between expected and actual frames

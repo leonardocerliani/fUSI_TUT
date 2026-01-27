@@ -41,6 +41,7 @@ function behavioral = detect_and_load_behavioral(datapath, nidaqLog)
     pupilFile = fullfile(datapath, 'flir_camera_time.csv');
     if exist(pupilFile, 'file')
         pupilTime = readmatrix(pupilFile);
+        pupilTime = pupilTime - nidaqLog.time(1);
         behavioral.pupil.pupilTime = pupilTime;
         
         fprintf('  ✓ Pupil camera: flir_camera_time.csv\n');
