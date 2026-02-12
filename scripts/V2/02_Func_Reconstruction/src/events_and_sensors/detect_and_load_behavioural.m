@@ -1,4 +1,4 @@
-function behavioral = detect_and_load_behavioral(datapath, nidaqLog)
+function behavioral = detect_and_load_sensors(datapath, nidaqLog)
     % DETECT_AND_LOAD_BEHAVIORAL Auto-detect and load behavioral data
     %
     %   behavioral = detect_and_load_behavioral(datapath, nidaqLog)
