@@ -1,199 +1,265 @@
 # fUSI GLM Analysis Pipeline
 
-**Version 2.0 - Ultra-Simplified Architecture**  
-**Last Updated**: 2026-02-12
+**Version 3.0 - Full Statistics & Interactive Visualization**  
+**Last Updated**: 2026-02-13
 
 ## Overview
 
-A clean, transparent GLM analysis pipeline for fUSI data. Each model is defined in just 2 lines of code, making it easy to understand, modify, and extend.
-
-## Core Philosophy
-
-**"One line per model - super simple!"**
-
-```matlab
-res = glm('M1', Y, stim);
-all_results.M1.betas = remap_betas(res.betas, data.bmask);
-```
+A complete GLM analysis pipeline for fUSI data with comprehensive statistics, interactive visualization, and paper-accurate methods. Supports multiple models with automatic computation of effect sizes, significance tests, and visual exploration.
 
 ## Quick Start
 
 1. Make sure `prepPDI.mat` is in the current directory
-2. Run the main script:
+2. Run the main analysis:
    ```matlab
    do_analysis_methods_paper
    ```
-3. Access results:
+3. Explore results interactively:
    ```matlab
-   all_results.M1.betas  % [p x ny x nz] beta maps
-   all_results.M2.betas  % [p x ny x nz] beta maps
+   view_glm_results(all_results, data, 'M1');
+   view_glm_results(all_results, data, 'M3');
    ```
 
-## Important: Beta Map Organization
+## Key Features
 
-⚠️ **The intercept is ALWAYS the LAST beta** ⚠️
+### ✅ Complete Statistics
+- **Beta coefficients** - Parameter estimates
+- **R²** - Model fit (variance explained)
+- **η²** - Effect size per predictor
+- **Z-scores** - Standardized coefficients
+- **p-values** - Statistical significance (two-tailed)
 
-For any model with `p` predictors:
-- `betas(1, :, :)` = first predictor
-- `betas(2, :, :)` = second predictor
-- `betas(p, :, :)` = p-th predictor
-- `betas(end, :, :)` = **intercept (always last)**
+### ✅ Interactive Visualization
+- Click eta² maps to explore voxel timeseries
+- See model fit overlaid on signal
+- View all predictors (HRF-convolved as used in model)
+- Multiple eta² maps for multi-predictor models
 
-Example:
+### ✅ Paper-Accurate Methods
+- Trial-based stationary stimulus selection
+- "Trials where wheel velocity exceeded 2 cm/s for < 200ms"
+- Uses original high-resolution wheelInfo data
+
+## Main Analysis Models
+
+The pipeline fits 3 core models with variations:
+
+### Model 1: Stimuli While Stationary
 ```matlab
-% Model with stimulus only
-res = glm('M1', Y, stim);
-% betas(1, :, :) = stimulus beta
-% betas(2, :, :) = intercept
+stim_stationary = get_stationary_trials(data, 20.0, 200);
+glm('M1', Y, stim_stationary);
+```
+- Only includes trials with minimal movement
+- Paper criterion: wheel > 20 mm/s for < 200ms
 
-% Model with 3 predictors
-res = glm('M2', Y, [stim, wheel, hrf_conv(stim.*wheel, TR)]);
-% betas(1, :, :) = stimulus beta
-% betas(2, :, :) = wheel beta
-% betas(3, :, :) = interaction beta
-% betas(4, :, :) = intercept (LAST!)
+### Model 2: All Stimuli (HRF)
+```matlab
+glm('M2', Y, hrf_conv(stim, TR));
+```
+- All stimulus trials
+- HRF-convolved for hemodynamic response
+
+### Model 3: Full Model
+```matlab
+glm('M3', Y, [hrf_conv(stim, TR), wheel, hrf_conv(wheel, TR), hrf_conv(stim.*wheel, TR)]);
+```
+- Stimulus (HRF)
+- Running (raw)
+- Running hemodynamic response (HRF)
+- Interaction between stimulus and running (HRF)
+
+### Variations
+Each model also computed with:
+- **PC1 removal** (`M1_PC1_removed`, etc.) - Global signal regression
+- **Simple correlation** (`M1_corr`, `M2_corr`) - Direct Pearson correlation
+
+## Core Functions
+
+### GLM Analysis
+
+#### `glm(model_name, Y, X, predictor_labels)`
+Fits GLM with comprehensive statistics.
+
+**Inputs:**
+- `model_name` - string identifier (e.g., 'M1')
+- `Y` - [T × V] data matrix
+- `X` - [T × p] design matrix
+- `predictor_labels` - {1 × p} cell array of predictor names
+
+**Outputs (struct):**
+- `.betas` - [p+1 × V] parameter estimates (intercept last)
+- `.R2` - [1 × V] model fit (variance explained)
+- `.eta2` - [p+1 × V] effect size per predictor
+- `.Z` - [p+1 × V] z-scores
+- `.p` - [p+1 × V] p-values (two-tailed)
+- `.predictor_labels` - {1 × p+1} includes 'intercept'
+- `.model_name` - string
+
+**Example:**
+```matlab
+M1_predictors = stim_stationary;
+M1_labels = {'stim_stationary'};
+glm_estimate = glm('M1', Y, M1_predictors, M1_labels);
 ```
 
-## Available Functions
+#### `remap_glm_results(glm_estimate, bmask)`
+Remaps all GLM statistics to spatial format.
 
-### Core Functions
+**Inputs:**
+- `glm_estimate` - struct from glm()
+- `bmask` - [ny × nz] brain mask
+
+**Outputs (struct):**
+- `.betas` - [p+1 × ny × nz]
+- `.R2` - [1 × ny × nz]
+- `.eta2` - [p+1 × ny × nz]
+- `.Z` - [p+1 × ny × nz]
+- `.p` - [p+1 × ny × nz]
+- `.predictor_labels`, `.model_name`
+
+**Example:**
+```matlab
+all_results.M1 = remap_glm_results(glm_estimate, data.bmask);
+```
+
+### Correlation Analysis
+
+#### `simple_corr(predictor, Y, bmask)`
+Computes Pearson correlation and effect size.
+
+**Outputs (struct):**
+- `.r` - [ny × nz] correlation map
+- `.eta2` - [ny × nz] effect size (r²)
+
+**Example:**
+```matlab
+all_results.M1_corr = simple_corr(stim_stationary, Y, data.bmask);
+```
+
+### Predictor Creation
 
 #### `create_predictors(data)`
-Creates basic stimulus and wheel speed predictors from prepPDI data.
+Creates frame-aligned stimulus and wheel speed predictors.
+
 ```matlab
 [stim, wheel] = create_predictors(data);
 ```
 
-#### `prepare_data_matrix(PDI, bmask)`
-Reshapes 3D fUSI data to 2D matrix for GLM fitting.
+#### `get_stationary_trials(data, speed_threshold, duration_threshold)`
+**Paper method** for trial-based stationary selection.
+
+**Inputs:**
+- `data` - struct with stimInfo, wheelInfo
+- `speed_threshold` - speed limit (default: 20 mm/s = 2 cm/s)
+- `duration_threshold` - max movement duration (default: 200 ms)
+
+**Outputs:**
+- `stim_stationary` - [T × 1] stimulus during valid trials
+
+**Example:**
 ```matlab
-Y = prepare_data_matrix(data.PDI, data.bmask);  % [T x V]
+stim_stationary = get_stationary_trials(data, 20.0, 200);
 ```
 
-#### `glm(model_name, Y, X)`
-Fits GLM to all voxels. **Automatically adds intercept.**
-```matlab
-res = glm('M1', Y, stim);
-% res.betas [p+1 x V] - includes intercept as last row
-% res.model_name - 'M1'
-```
-
-#### `remap_betas(betas, bmask)`
-Remaps betas from vector format to 2D spatial format.
-```matlab
-betas_2D = remap_betas(res.betas, data.bmask);  % [p x ny x nz]
-```
-
-### Transformation Functions
+**Method:**
+- For each stimulus trial, calculate total duration where wheel > threshold
+- Keep trial if movement duration < 200ms
+- Discard trial otherwise
 
 #### `hrf_conv(predictor, TR)`
-Applies canonical HRF convolution (SPM double-gamma).
+Applies SPM canonical HRF (double-gamma).
+
 ```matlab
 stim_hrf = hrf_conv(stim, TR);
 ```
 
-**HRF Parameters:**
-- Peak response: ~6 seconds
-- Undershoot: ~16 seconds
-- Normalized to unit area
+### Data Preparation
 
-#### `get_stationary_stim(stim, wheel, threshold)`
-Extracts stimulus during low wheel speed (default: 5 cm/s).
+#### `prepare_data_matrix(PDI, bmask)`
+Reshapes 3D fUSI data to 2D matrix.
+
 ```matlab
-stim_stationary = get_stationary_stim(stim, wheel, 5.0);
+Y = prepare_data_matrix(data.PDI, data.bmask);  % [T × V]
 ```
 
 #### `remove_PC1(Y)`
 Removes first principal component (global signal).
-```matlab
-Y_clean = remove_PC1(Y);
-```
-
-## Example Models
-
-### Basic Models
 
 ```matlab
-% MODEL 1: Stimulus only
-res = glm('M1', Y, stim);
-all_results.M1.betas = remap_betas(res.betas, data.bmask);
-
-% MODEL 2: Stationary stimulus
-stim_stat = get_stationary_stim(stim, wheel, 5.0);
-res = glm('M2', Y, stim_stat);
-all_results.M2.betas = remap_betas(res.betas, data.bmask);
+Y_PC1_removed = remove_PC1(Y);
 ```
 
-### Advanced Models
+## Interactive Visualization
 
+### `view_glm_results(all_results, data, model_name)`
+
+Interactive viewer for exploring GLM results.
+
+**Features:**
+- **Left**: Multiple eta² maps (one per predictor)
+- **Right Top**: Voxel signal vs model fit with R²
+- **Right Bottom**: All predictors (normalized)
+- **Interaction**: Click first eta² map to explore voxels
+
+**Usage:**
 ```matlab
-% Calculate TR
-TR = median(diff(data.time));
+% View any GLM model
+view_glm_results(all_results, data, 'M1');
+view_glm_results(all_results, data, 'M2');
+view_glm_results(all_results, data, 'M3');
+view_glm_results(all_results, data, 'M3_PC1_removed');
 
-% MODEL 3: HRF'd stimulus
-res = glm('M3', Y, hrf_conv(stim, TR));
-all_results.M3.betas = remap_betas(res.betas, data.bmask);
-
-% MODEL 4: Stimulus + Wheel
-res = glm('M4', Y, [stim, wheel]);
-all_results.M4.betas = remap_betas(res.betas, data.bmask);
-
-% MODEL 5: HRF'd with interaction
-interaction_hrf = hrf_conv(stim .* wheel, TR);
-res = glm('M5', Y, [hrf_conv(stim, TR), wheel, interaction_hrf]);
-all_results.M5.betas = remap_betas(res.betas, data.bmask);
-
-% MODEL 6: Stationary vs Running (separate)
-stim_stat = get_stationary_stim(stim, wheel, 5.0);
-stim_run = stim - stim_stat;
-res = glm('M6', Y, [stim_stat, stim_run]);
-all_results.M6.betas = remap_betas(res.betas, data.bmask);
-
-% MODEL 7: With PC1 removed
-res = glm('M7_PC1removed', Y_PC1_removed, stim);
-all_results.M7_PC1removed.betas = remap_betas(res.betas, data.bmask);
-
-% MODEL 8: Derivative of wheel speed
-wheel_deriv = [0; diff(wheel)];
-res = glm('M8', Y, [stim, wheel, wheel_deriv]);
-all_results.M8.betas = remap_betas(res.betas, data.bmask);
+% Correlation results (use imagesc instead)
+figure; imagesc(all_results.M1_corr.r); colorbar; title('M1 Correlation');
+figure; imagesc(all_results.M1_corr.eta2); colorbar; title('M1 Effect Size');
 ```
 
-## Pipeline Structure
+**What You See:**
+- **M1**: 1 eta² map (stationary stimulus)
+- **M2**: 1 eta² map (stimulus HRF)
+- **M3**: 4 eta² maps (stimulus, running, running HRF, interaction)
 
-### Main Script Flow
+**Interaction:**
+1. Click on first eta² map (predictor of interest)
+2. Top right shows: Raw signal (blue) + Model fit (red)
+3. Bottom right shows: All predictors as they appear in model
 
-```matlab
-% 1. Load data
-load('prepPDI.mat');
-
-% 2. Create predictors
-[stim, wheel] = create_predictors(data);
-TR = median(diff(data.time));
-
-% 3. Prepare data matrices
-Y = prepare_data_matrix(data.PDI, data.bmask);
-Y_PC1_removed = remove_PC1(Y);  % Always created
-
-% 4. Fit models (2 lines each!)
-all_results = struct();
-
-res = glm('M1', Y, stim);
-all_results.M1.betas = remap_betas(res.betas, data.bmask);
-
-% Add more models as needed...
-```
-
-### Results Structure
+## Results Structure
 
 ```matlab
 all_results
-├── M1
-│   └── betas [2 x ny x nz]  % [stim, intercept]
-├── M2
-│   └── betas [2 x ny x nz]  % [stim_stationary, intercept]
-└── M3
-    └── betas [2 x ny x nz]  % [stim_hrf, intercept]
+├── M1                      % Stationary stimuli
+│   ├── betas [2 × ny × nz]           % [stim_stationary, intercept]
+│   ├── R2 [1 × ny × nz]
+│   ├── eta2 [2 × ny × nz]
+│   ├── Z [2 × ny × nz]
+│   ├── p [2 × ny × nz]
+│   ├── predictor_labels {'stim_stationary', 'intercept'}
+│   ├── model_name 'M1'
+│   └── X [T × 2]                     % Design matrix (for viewer)
+│
+├── M1_PC1_removed          % Same structure, PC1-removed data
+├── M1_corr                 % Correlation analysis
+│   ├── r [ny × nz]                   % Correlation map
+│   └── eta2 [ny × nz]                % Effect size
+│
+├── M2                      % All stimuli (HRF)
+│   └── ... (same structure as M1)
+│
+├── M2_PC1_removed
+├── M2_corr
+│
+├── M3                      % Full model
+│   ├── betas [5 × ny × nz]           % [stim_hrf, running, running_hrf, interaction_hrf, intercept]
+│   ├── R2 [1 × ny × nz]
+│   ├── eta2 [5 × ny × nz]
+│   ├── Z [5 × ny × nz]
+│   ├── p [5 × ny × nz]
+│   ├── predictor_labels {'stim_hrf', 'running', 'running_hrf', '(stim*running)_hrf', 'intercept'}
+│   ├── model_name 'M3'
+│   └── X [T × 5]
+│
+└── M3_PC1_removed
 ```
 
 ## File Organization
@@ -204,184 +270,136 @@ all_results
 ├── prepPDI.mat                    # Preprocessed data
 ├── README.md                      # This file
 ├── src/
-│   ├── create_predictors.m        # Create stim & wheel
-│   ├── prepare_data_matrix.m      # Reshape PDI to Y
-│   ├── glm.m                      # Fit GLM
-│   ├── remap_betas.m             # Remap to 2D space
+│   ├── create_predictors.m        # Frame-aligned predictors
+│   ├── prepare_data_matrix.m      # Reshape PDI → Y matrix
+│   ├── glm.m                      # Fit GLM with full statistics
+│   ├── remap_glm_results.m        # Remap all stats to space
+│   ├── remap_betas.m             # Helper for spatial remapping
+│   ├── simple_corr.m             # Correlation analysis
+│   ├── get_stationary_trials.m    # Paper method (trial-based)
+│   ├── get_stationary_stim.m     # Legacy (frame-based)
 │   ├── hrf_conv.m                # HRF convolution
-│   ├── get_stationary_stim.m     # Stationary periods
-│   └── remove_PC1.m              # Remove global signal
+│   ├── remove_PC1.m              # Global signal regression
+│   └── view_glm_results.m        # Interactive viewer
 └── memory-bank/                   # Documentation
-    ├── current_status.md          # Latest status
-    └── matlab_implementation.md   # Technical details
+    ├── current_status.md          # Project status
+    └── ...
 ```
 
-## Tips & Tricks
+## Important Notes
 
-### Quick Testing
+### Beta Map Organization
+⚠️ **The intercept is ALWAYS the LAST beta** ⚠️
+
 ```matlab
-% Test a model without saving
-res = glm('test', Y, hrf_conv(stim, TR));
-mean(res.betas(1, :))  % Mean beta for predictor
+% M1 (1 predictor + intercept)
+all_results.M1.betas(1, :, :)    % Stimulus beta
+all_results.M1.betas(2, :, :)    % Intercept
+
+% M3 (4 predictors + intercept)
+all_results.M3.betas(1, :, :)    % Stimulus (HRF)
+all_results.M3.betas(2, :, :)    % Running
+all_results.M3.betas(3, :, :)    % Running (HRF)
+all_results.M3.betas(4, :, :)    % Interaction (HRF)
+all_results.M3.betas(5, :, :)    % Intercept (LAST)
 ```
 
-### Accessing Specific Betas
+### Wheel Speed Units
+⚠️ **Wheel speed is in mm/s, not cm/s** ⚠️
+
+The paper mentions "2 cm/s" but data is in mm/s:
 ```matlab
-% Get stimulus beta (first predictor)
-stim_beta = all_results.M1.betas(1, :, :);
-
-% Get intercept (always last)
-intercept = all_results.M1.betas(end, :, :);
-
-% Visualize a beta map
-imagesc(squeeze(all_results.M1.betas(1, :, :)));
-colorbar;
-title('Stimulus Beta Map');
+% Paper: 2 cm/s threshold
+% Code: 20 mm/s threshold (equivalent)
+stim_stationary = get_stationary_trials(data, 20.0, 200);
 ```
 
-### Combining Predictors
-```matlab
-% Z-score continuous predictors
-wheel_z = zscore(wheel);
+### Memory Optimization
+Residuals are NOT stored (they're ~T × V × 8 bytes per model). All other statistics are computed but residuals are commented out in `glm.m` to save memory.
 
-% Create interaction
-interaction = stim .* wheel;
+## Statistics Formulas
 
-% Multiple predictors
-res = glm('M_multi', Y, [stim, wheel_z, interaction]);
+### R² (Model Fit)
+```
+R² = 1 - (SS_residual / SS_total)
+```
+Proportion of variance explained by the model.
+
+### η² (Effect Size)
+```
+η² = SS_effect / (SS_effect + SS_residual)
+```
+Partial eta-squared for each predictor.
+
+### Z-score
+```
+Z = beta / SE(beta)
+SE(beta) = sqrt(diag(inv(X'X)) * sigma²)
+sigma² = SS_residual / df
 ```
 
-## Current Limitations
+### P-value
+```
+p = 2 * (1 - Φ(|Z|))
+```
+Two-tailed test using normal approximation.
 
-- Results contain only betas (no R², t-stats, etc.)
-- No drift regressors or motion parameters
-- No predictor names stored in results
-- Manual model definition required
-
-See "Future Enhancements" below for planned improvements.
-
-## Future Enhancements
-
-### High Priority
-
-1. **Add Drift and Motion Parameters**
-   - Include optional drift regressors (DCT basis)
-   - Include motion parameters from preprocessing
-   - Usage: `res = glm('M1', Y, stim, 'drift', true, 'motion', data.motionParams);`
-
-2. **Expand Results Statistics**
-   Currently returns only betas. Should add:
-   - R² (coefficient of determination)
-   - η² (partial eta-squared, effect size)
-   - Z-statistics
-   - t-statistics
-   - Residuals
-   - Fitted values
-   
-3. **Explicit Predictor Naming**
-   - Pass predictor names to glm()
-   - Store names in results
-   - Critical for complex models
-   - Usage: `res = glm('M1', Y, [stim, wheel], 'names', {'stimulus', 'wheel'});`
-   - Results: `all_results.M1.predictor_names = {'stimulus', 'wheel', 'intercept'}`
-
-### Medium Priority
-
-4. **Optimize Stationary Threshold**
-   - Currently hardcoded at 5 cm/s
-   - Investigate optimal threshold empirically
-   - Consider ROC analysis or cross-validation
-   - Possibly make threshold data-dependent
-
-5. **Visualization Function**
-   - Create `plot_betas(results)` function
-   - Display all betas in subplots with labels
-   - Include predictor names and model info
-   - Usage: `plot_betas(all_results.M3);`
-
-### Low Priority (Automation)
-
-6. **Command-Line Arguments**
-   - Pass arguments to main script
-   - Enable batch processing
-   - Usage: `do_analysis_methods_paper('subject', '01', 'models', {'M1', 'M2'})`
-
-7. **Subject Lookup Table**
-   - Map subject IDs to prepPDI paths
-   - Simplify multi-subject analysis
-   - Create `subjects.csv` with ID → path mapping
-   - Usage: `do_analysis_methods_paper('subject', '01')` finds path automatically
-
-## Technical Notes
+## Technical Details
 
 ### GLM Implementation
-- Uses MATLAB's backslash operator (`X \ Y`) for efficiency
-- Vectorized across all voxels simultaneously
-- Typical dataset (3652 timepoints × 14220 voxels): ~2-5 seconds per model
+- Uses MATLAB backslash operator (`X \ Y`)
+- Vectorized across all voxels
+- Typical: ~2-5 seconds per model (3652 timepoints × 14220 voxels)
 
 ### HRF Model
-SPM canonical double-gamma HRF:
-```
-hrf(t) = (t^a1 * exp(-t/b1)) / (b1^a1 * Γ(a1+1))
-       - c * (t^a2 * exp(-t/b2)) / (b2^a2 * Γ(a2+1))
-
-where:
-  a1 = 6  (time to peak, seconds)
-  b1 = 1  (dispersion)
-  a2 = 16 (time to undershoot)
-  b2 = 1  (dispersion)
-  c = 1/6 (ratio undershoot/peak)
-```
+SPM canonical double-gamma:
+- Peak: ~6 seconds (a1=6, b1=1)
+- Undershoot: ~16 seconds (a2=16, b2=1)
+- Ratio: c = 1/6
+- Normalized to unit area
 
 ### Data Dimensions
-- PDI: [ny × nz × T] spatial × time
-- Y: [T × V] timepoints × brain voxels
-- X: [T × p] design matrix (before intercept)
-- betas: [p+1 × V] parameters (intercept is last)
-- betas_2D: [p+1 × ny × nz] remapped to space
+- PDI: [ny × nz × T]
+- Y: [T × V] brain voxels × time
+- X: [T × p] design matrix
+- betas: [p+1 × V] or [p+1 × ny × nz]
 
 ## Requirements
 
 - MATLAB R2016b or later
 - No special toolboxes required
-- prepPDI.mat with required fields:
+- prepPDI.mat with fields:
   - `PDI` [ny × nz × T]
   - `time` [1 × T]
-  - `stimInfo` table
-  - `wheelInfo` table
+  - `stimInfo` table (startTime, endTime)
+  - `wheelInfo` table (time, wheelspeed in mm/s)
   - `bmask` [ny × nz]
 
 ## Troubleshooting
 
-### Common Issues
+**"Unrecognized field name 'X'"**
+- For PC1-removed models, ensure `.X` field is stored
+- Add: `all_results.M1_PC1_removed.X = [M1_predictors, ones(T,1)];`
 
-**"Expected 'data' struct in prepPDI.mat"**
-- Make sure your .mat file has a variable called `data`
+**"Rank deficient" warning**
+- Occurs when no valid stationary trials found
+- Check wheel speed threshold (should be 20 mm/s, not 2 mm/s)
+- Verify wheelInfo.wheelspeed units
 
-**"TR (repetition time) must be provided"**
-- Remember: `hrf_conv(stim, TR)` needs both arguments
-- Calculate TR: `TR = median(diff(data.time));`
+**"Valid trials: 0"**
+- Units mismatch: Use 20 mm/s for 2 cm/s threshold
+- Or threshold too low for your data
 
-**"Dimension mismatch"**
-- Make sure all predictors have same length as Y
-- Check: `length(stim) == size(Y, 1)`
-
-**"Out of memory"**
-- For very large datasets, process in chunks
-- Or use PC1-removed data (smaller)
-
-## Contributing
-
-Found a bug or have a suggestion? 
-- Document in `memory-bank/current_status.md`
-- Update this README
-- Test thoroughly before committing
+**Viewer doesn't work for correlation results**
+- Use `imagesc()` directly for `M1_corr`, `M2_corr`
+- Viewer only works for GLM models (M1, M2, M3, and PC1-removed versions)
 
 ## Version History
 
-- **v2.0** (2026-02-12): Ultra-simplified architecture, 2-line models
+- **v3.0** (2026-02-13): Full statistics, interactive viewer, paper-accurate methods
+- **v2.0** (2026-02-12): Ultra-simplified architecture
 - **v1.0** (2026-02-08): Initial implementation
 
 ---
 
-**Questions?** Check `memory-bank/current_status.md` for latest updates and `memory-bank/matlab_implementation.md` for technical details.
+**Questions?** Check `memory-bank/current_status.md` for latest updates.

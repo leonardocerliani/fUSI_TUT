@@ -36,21 +36,63 @@ fprintf('Fitting GLM models...\n\n');
 % Initialize results structure
 all_results = struct();
 
-% --- MODEL 1: Stimulus ---
-fprintf('M1: stimulus\n');
-% res = glm('M1', Y, stim); % w/out convolution
-res = glm('M1', Y, hrf_conv(stim, TR));
-all_results.M1.betas = remap_betas(res.betas, data.bmask);
+%% --- MODEL 1: Stimuli while stationary ---
+fprintf('M1: Stimuli while stationary\n');
+% Note: Assuming wheelspeed is in mm/s, so 2 cm/s = 20 mm/s
+stim_stationary = get_stationary_trials(data, 20.0, 200);
+M1_predictors = stim_stationary;
+M1_labels = {'stim_stationary'};
+glm_estimate = glm('M1', Y, M1_predictors, M1_labels);
+all_results.M1 = remap_glm_results(glm_estimate, data.bmask);
+all_results.M1.X = [M1_predictors, ones(size(M1_predictors,1),1)];  % Store design matrix
 
-% --- MODEL 2: Stationary stimulus ---
-fprintf('M2: stationary stimulus\n');
-stim_stationary = get_stationary_stim(stim, wheel, 5.0);
-res = glm('M2', Y, stim_stationary);
-all_results.M2.betas = remap_betas(res.betas, data.bmask);
+% M1 With PC1 removal
+glm_estimate = glm('M1_PC1_removed', Y_PC1_removed, M1_predictors, M1_labels);
+all_results.M1_PC1_removed = remap_glm_results(glm_estimate, data.bmask);
+all_results.M1_PC1_removed.X = [M1_predictors, ones(size(M1_predictors,1),1)];
 
-fprintf('\n=== Analysis complete ===\n');
-fprintf('Results stored in: all_results\n');
-fprintf('  all_results.M1.betas: [%d x %d x %d]\n', ...
-        size(all_results.M1.betas, 1), size(all_results.M1.betas, 2), size(all_results.M1.betas, 3));
-fprintf('  all_results.M2.betas: [%d x %d x %d]\n', ...
-        size(all_results.M2.betas, 1), size(all_results.M2.betas, 2), size(all_results.M2.betas, 3));
+
+% M1 simple correlation
+all_results.M1_corr = simple_corr(stim_stationary, Y, data.bmask);
+
+
+
+
+%% --- MODEL 2: All stimuli ---
+fprintf('M2: All stimuli\n');
+M2_predictors = hrf_conv(stim, TR);
+M2_labels = {'stim_hrf'};
+glm_estimate = glm('M2', Y, M2_predictors, M2_labels);
+all_results.M2 = remap_glm_results(glm_estimate, data.bmask);
+all_results.M2.X = [M2_predictors, ones(size(M2_predictors,1),1)];  % Store design matrix
+
+% M2 With PC1 removal
+glm_estimate = glm('M2_PC1_removed', Y_PC1_removed, M2_predictors, M2_labels);
+all_results.M2_PC1_removed = remap_glm_results(glm_estimate, data.bmask);
+all_results.M2_PC1_removed.X = [M2_predictors, ones(size(M2_predictors,1),1)];
+
+
+% M2 simple correlation 
+all_results.M2_corr = simple_corr(stim, Y, data.bmask);
+
+
+
+%% --- MODEL 3: All stimuli + running + interaction ---
+fprintf('M3: All stimuli + running + interaction\n');
+M3_predictors = [hrf_conv(stim, TR), wheel, hrf_conv(wheel, TR), hrf_conv(stim.*wheel, TR)];
+M3_labels = {'stim_hrf', 'running', 'running_hrf', '(stim*running)_hrf'};
+glm_estimate = glm('M3', Y, M3_predictors, M3_labels);
+all_results.M3 = remap_glm_results(glm_estimate, data.bmask);
+all_results.M3.X = [M3_predictors, ones(size(M3_predictors,1),1)];  % Store design matrix
+
+% M3 With PC1 removal
+glm_estimate = glm('M3_PC1_removed', Y_PC1_removed, M3_predictors, M3_labels);
+all_results.M3_PC1_removed = remap_glm_results(glm_estimate, data.bmask);
+all_results.M3_PC1_removed.X = [M3_predictors, ones(size(M3_predictors,1),1)];
+
+
+% % view results
+% view_glm_results(all_results, data, 'M3')
+% view_glm_results(all_results, data, 'M3_PC1_removed')
+
+

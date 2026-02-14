@@ -1,6 +1,6 @@
 # MATLAB Implementation - Simplified Architecture
 
-**Last Updated**: 2026-02-12 (v2 - Further Simplified)
+**Last Updated**: 2026-02-13 (v2.1 - Added Predictor Labels)
 
 ## Architecture Overview
 
@@ -36,11 +36,12 @@ all_results.M1.betas = remap_betas(res.betas, data.bmask);
    - Output: Y [T×V]
    - Silent (no console output)
 
-3. **`glm(model_name, Y, X)`** ✅ (V2 - ULTRA SIMPLIFIED)
-   - **New signature!** Takes model_name as first argument
-   - Automatically adds intercept (constant term)
-   - Input: model_name (string), Y [T×V], X [T×p] (without intercept)
-   - Output: results struct with .betas [p+1 × V] and .model_name
+3. **`glm(model_name, Y, X, predictor_labels)`** ✅ (V2.1 - WITH LABELS)
+   - **New signature!** Takes model_name and predictor labels
+   - Automatically adds intercept (constant term) and 'intercept' label
+   - Input: model_name (string), Y [T×V], X [T×p], predictor_labels {1×p}
+   - Output: results struct with .betas [p+1 × V], .predictor_labels, and .model_name
+   - Validates that labels match number of predictors
    - Minimal output
 
 4. **`remap_betas(betas, bmask)`** ✅ NEW
