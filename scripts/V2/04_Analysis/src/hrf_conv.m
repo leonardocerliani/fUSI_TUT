@@ -2,8 +2,8 @@ function convolved = hrf_conv(predictor, TR)
 % HRF_CONV - Apply canonical HRF convolution to a predictor
 %
 % Convolves a predictor time series with a canonical hemodynamic response
-% function (double-gamma HRF). Useful for modeling BOLD/hemodynamic responses
-% to neural events.
+% function (double-gamma HRF) using the exact parameters from Chaoyi's code.
+% Useful for modeling BOLD/hemodynamic responses to neural events.
 %
 % Inputs:
 %   predictor - [T x 1] predictor vector (e.g., stimulus boxcar, wheel speed)
@@ -13,10 +13,17 @@ function convolved = hrf_conv(predictor, TR)
 %   convolved - [T x 1] HRF-convolved predictor (same length as input)
 %
 % Method:
-%   Uses SPM-style canonical HRF with parameters:
-%   - Peak response: ~6 seconds
-%   - Undershoot: ~16 seconds
-%   - Double-gamma function shape
+%   Uses SPM-style canonical HRF (from hemodynamicResponse.m) with parameters:
+%   [2.4 8 0.8 0.9 6 0 16] where:
+%     p(1) = 2.4  - delay of response (default 6)
+%     p(2) = 8    - delay of undershoot (default 16)
+%     p(3) = 0.8  - dispersion of response (default 1)
+%     p(4) = 0.9  - dispersion of undershoot (default 1)
+%     p(5) = 6    - ratio of response to undershoot (default 6)
+%     p(6) = 0    - onset (default 0)
+%     p(7) = 16   - length of kernel in seconds (default 32)
+%
+%   These parameters match those used in IndividualGLMRunningOrNot.m
 %
 % Example:
 %   % Apply HRF to stimulus
@@ -25,7 +32,7 @@ function convolved = hrf_conv(predictor, TR)
 %   % Apply HRF to interaction
 %   interaction_hrf = hrf_conv(stim .* wheel, TR);
 %
-% See also: create_predictors, get_stationary_stim
+% See also: hemodynamicResponse, create_predictors
 
 %% Input validation
 
@@ -43,36 +50,32 @@ end
 
 % Ensure column vector
 predictor = predictor(:);
-T = length(predictor);
 
-%% Create canonical HRF
+%% Create HRF using Chaoyi's parameters
 
-% Time vector for HRF (0 to 32 seconds is typical)
-hrf_length = 32; % seconds
-t = 0:TR:hrf_length;
+% Parameters: [delay_response, delay_undershoot, disp_response, disp_undershoot, 
+%              ratio, onset, kernel_length]
+hrf_params = [2.4, 8, 0.8, 0.9, 6, 0, 16];
 
-% SPM canonical HRF parameters (double gamma function)
-% First gamma (peak response)
-a1 = 6;     % time to peak (seconds)
-b1 = 1;     % dispersion
+% - p(1) = 2.4 - delay of response (default 6)
+% - p(2) = 8 - delay of undershoot (default 16)
+% - p(3) = 0.8 - dispersion of response (default 1)
+% - p(4) = 0.9 - dispersion of undershoot (default 1)
+% - p(5) = 6 - ratio of response to undershoot (default 6)
+% - p(6) = 0 - onset (default 0)
+% - p(7) = 16 - length of kernel (default 32)
 
-% Second gamma (undershoot)
-a2 = 16;    % time to undershoot peak
-b2 = 1;     % dispersion
-c = 1/6;    % ratio of undershoot to response
 
-% Double gamma HRF
-hrf = (t.^a1 .* exp(-t/b1)) / (b1^a1 * gamma(a1+1)) - ...
-      c * (t.^a2 .* exp(-t/b2)) / (b2^a2 * gamma(a2+1));
 
-% Normalize to unit area (so convolution preserves magnitude)
-hrf = hrf / sum(hrf);
+% Generate HRF using hemodynamicResponse function (from SPM)
+hrf = hemodynamicResponse(TR, hrf_params);
 
 %% Convolve predictor with HRF
 
-% Use conv and truncate to original length
-convolved_full = conv(predictor, hrf(:));
-convolved = convolved_full(1:T);
+% Use filter (equivalent to convolution, more efficient)
+% filter(b, a, x) computes y where a(1)*y(n) = b(1)*x(n) + ... + b(nb+1)*x(n-nb)
+% With a=1, this is just convolution: y(n) = b(1)*x(n) + b(2)*x(n-1) + ...
+convolved = filter(hrf, 1, predictor);
 
 %% Ensure output is column vector
 

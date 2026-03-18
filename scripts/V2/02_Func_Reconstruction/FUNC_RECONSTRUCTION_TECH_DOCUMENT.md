@@ -81,28 +81,28 @@
 ### Source Code Organization
 ```
 src/
-├── io/                      % Input/output operations
-│   ├── load_core_data.m
-│   └── detect_and_load_behavioral.m
-├── sync/                    % Timeline synchronization
-│   └── synchronize_timeline.m
-├── events/                  % Event extraction
+├── events/                  % Event extraction & behavioral data (5 functions)
+│   ├── detect_and_load_behavioral.m
 │   ├── detect_and_load_stimulation.m
+│   ├── extract_auditory_events.m
 │   ├── extract_shock_events.m
-│   ├── extract_visual_events.m
-│   └── extract_auditory_events.m
-├── processing/              % Signal processing utilities
-│   └── detect_ttl_edges.m
-├── assembly/                % Data structure assembly
+│   └── extract_visual_events.m
+├── io/                      % I/O operations (4 functions)
 │   ├── build_pdi_structure.m
+│   ├── detect_ttl_edges.m
+│   ├── load_core_data.m
 │   └── save_pdi_data.m
-└── utils/                   % Utility functions
+├── sync/                    % Timeline synchronization (1 function)
+│   └── synchronize_timeline.m
+└── utils/                   % Utility functions (5 functions)
+    ├── generate_save_path.m
     ├── load_experiment_config.m
     ├── parse_config.m
-    ├── generate_save_path.m
-    ├── print_ttl_config.m
-    └── print_final_summary.m
+    ├── print_final_summary.m
+    └── print_ttl_config.m
 ```
+
+**Total: 15 modular functions organized by functionality**
 
 ## Expected Input Structure
 
@@ -120,7 +120,7 @@ Data_collection/
             ├── ShockStimulation.csv        [optional]
             ├── GSensor.csv                 [optional]
             ├── RunningWheel.csv            [optional]
-            ├── flir_camera_time.csv        [optional]
+            ├── pupil_camera.csv            [optional]
             └── FUSI_data/                  [REQUIRED]
                 ├── fUS_block_PDI_float.bin [REQUIRED]
                 ├── L22-14_PlaneWave_FUSI_data.mat [REQUIRED]
@@ -1305,7 +1305,7 @@ This function checks for and loads:
 
 ### 5c. Pupil Camera Timestamps
 
-**File checked**: `flir_camera_time.csv`
+**File checked**: `pupil_camera.csv`
 
 **Processing:**
 - Simple file read - no processing or alignment performed
@@ -1341,7 +1341,7 @@ This enables:
     → 598450 time points, speed range: 0.0-45.3 cm/s
   ✓ G-sensor: GSensor.csv
     → 598450 time points, 3-axis acceleration
-  ✓ Pupil camera: flir_camera_time.csv
+  ✓ Pupil camera: pupil_camera.csv
     → 35880 time points
 ```
 

@@ -1,4 +1,4 @@
-function [anatomic] = Select_Anatomical_Slice
+function [anatomic] = s02_Select_Anatomical_Slice
 % Select_Anatomical_Slice opens a GUI to browse and select a functional slice from a 3D anatomical scan.
 %
 % USAGE:

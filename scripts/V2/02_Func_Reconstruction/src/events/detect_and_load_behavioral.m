@@ -1,4 +1,4 @@
-function behavioral = detect_and_load_sensors(datapath, nidaqLog)
+function behavioral = detect_and_load_behavioral(datapath, nidaqLog)
     % DETECT_AND_LOAD_BEHAVIORAL Auto-detect and load behavioral data
     %
     %   behavioral = detect_and_load_behavioral(datapath, nidaqLog)
@@ -38,13 +38,13 @@ function behavioral = detect_and_load_sensors(datapath, nidaqLog)
     end
     
     % Pupil camera
-    pupilFile = fullfile(datapath, 'flir_camera_time.csv');
+    pupilFile = fullfile(datapath, 'pupil_camera.csv');
     if exist(pupilFile, 'file')
         pupilTime = readmatrix(pupilFile);
         pupilTime = pupilTime - nidaqLog.time(1);
         behavioral.pupil.pupilTime = pupilTime;
         
-        fprintf('  ✓ Pupil camera: flir_camera_time.csv\n');
+        fprintf('  ✓ Pupil camera: pupil_camera.csv\n');
         fprintf('    → %d time points\n', length(pupilTime));
     else
         behavioral.pupil.pupilTime = [];

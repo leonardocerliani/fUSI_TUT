@@ -19,8 +19,16 @@ fprintf('  Data: [%d x %d x %d]\n', size(data.PDI, 1), size(data.PDI, 2), size(d
 fprintf('  Brain voxels: %d\n\n', sum(data.bmask(:)));
 
 %% 2. Create Predictors
+
+speed_threshold = 10.0;
+time_lapse_treshold = 1000;
+
 fprintf('Creating predictors...\n');
-[stim, wheel] = create_predictors(data);
+[stim, wheel, stim_stationary] = create_predictors(data, speed_threshold, time_lapse_treshold);
+
+% Visualize stationary trial selection (set to true to see plot)
+plot_stationary_trials(data, stim, wheel, stim_stationary, speed_threshold, true);
+
 TR = median(diff(data.time));
 fprintf('  TR: %.3f sec\n\n', TR);
 
@@ -38,8 +46,6 @@ all_results = struct();
 
 %% --- MODEL 1: Stimuli while stationary ---
 fprintf('M1: Stimuli while stationary\n');
-% Note: Assuming wheelspeed is in mm/s, so 2 cm/s = 20 mm/s
-stim_stationary = get_stationary_trials(data, 20.0, 200);
 M1_predictors = stim_stationary;
 M1_labels = {'stim_stationary'};
 glm_estimate = glm('M1', Y, M1_predictors, M1_labels);
@@ -91,8 +97,9 @@ all_results.M3_PC1_removed = remap_glm_results(glm_estimate, data.bmask);
 all_results.M3_PC1_removed.X = [M3_predictors, ones(size(M3_predictors,1),1)];
 
 
-% % view results
-% view_glm_results(all_results, data, 'M3')
-% view_glm_results(all_results, data, 'M3_PC1_removed')
+%% view results
 
-
+view_glm_results(all_results, data, 'M1')
+view_glm_results(all_results, data, 'M2')
+view_glm_results(all_results, data, 'M3')
+view_glm_results(all_results, data, 'M3_PC1_removed')

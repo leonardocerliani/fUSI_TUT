@@ -25,14 +25,15 @@ function config = load_experiment_config(datapath)
         fprintf(2, '    "pdi_frame": 3,\n');
         fprintf(2, '    "experiment_start": 6,\n');
         fprintf(2, '    "experiment_start_fallback": 5,\n');
-        fprintf(2, '    "shock": [4, 5, 12],\n');
         fprintf(2, '    "visual": 10,\n');
-        fprintf(2, '    "auditory": 11\n');
+        fprintf(2, '    "auditory": 11,\n');
+        fprintf(2, '    "shock": [4, 5, 12]\n');
         fprintf(2, '  }\n');
         fprintf(2, '}\n\n');
         fprintf(2, 'Notes:\n');
-        fprintf(2, '  • Update channel numbers to match your setup\n');
-        fprintf(2, '  • Remove lines for unused stimulation types\n');
+        fprintf(2, '  • Keep all channel fields for consistency across experiments\n');
+        fprintf(2, '  • Unused stimulation types are automatically ignored if CSV files are absent\n');
+        fprintf(2, '  • For shock, provide all possible channels [4,5,12] - code selects appropriately\n');
         fprintf(2, '  • Save as experiment_config.json in the data folder\n\n');
         fprintf(2, '========================================\n\n');
         

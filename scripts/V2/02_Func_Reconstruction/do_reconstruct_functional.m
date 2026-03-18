@@ -58,12 +58,12 @@ function PDI = do_reconstruct_functional(datapath, savepath)
     
 
     
-    %% Step 5: Detect and load optional data
+    %% Step 5: Detect and load stimulation and behavioral data
     fprintf('\n→ Detected stimulation files:\n');
     stimInfo = detect_and_load_stimulation(datapath, ttlData, nidaqLog, config);
     
     fprintf('\n→ Detected behavioral data:\n');
-    behavioral = detect_and_load_sensors(datapath, nidaqLog);
+    behavioral = detect_and_load_behavioral(datapath, nidaqLog);
     
 
 

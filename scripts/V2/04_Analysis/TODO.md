@@ -1,8 +1,48 @@
-## 20260213
+## 20260318 - Paper Methods Verification
+
+After reviewing Chaoyi's paper, here are the key questions/checks to verify our implementation matches the paper:
+
+### High Priority - Implementation Verification
+
+1. **Preprocessing Pipeline Check**
+   - [ ] Verify high-pass filtering (DCT, 0.002 Hz cutoff) is implemented
+   - [ ] Verify frame rejection based on accelerometer (z > 3.5) is implemented
+   - [ ] Verify pixel-wise artifact detection (z > 5) is implemented
+   - [ ] Verify spatial smoothing (Gaussian, 1 sigma) is implemented
+
+2. **Wheel Speed Conversion**
+   - [ ] Confirm encoder → cm/s conversion (19π/1024) happens in `create_predictors.m`
+   - [ ] Verify conversion happens BEFORE interpolation to frame times (as in paper)
+   - [ ] Double-check stationary threshold is 2.0 cm/s (not 20.0 mm/s)
+
+3. **GLM Running Predictors**
+   - [ ] Verify M3 includes both `Running` (raw) AND `Running⊗HRF` (convolved)
+   - [ ] Confirm we tested Running' (acceleration) and excluded it (negligible variance)
+   - [ ] Verify interaction term: `(Stim * Running) ⊗ HRF` (multiply BEFORE convolving)
+
+4. **Head Motion Predictor**
+   - [ ] Clarify: Paper uses head motion ONLY for frame rejection, NOT as GLM predictor
+   - [ ] Confirm our implementation matches this (no head motion in design matrix)
+
+5. **Validation Metrics (for group-level analysis)**
+   - [ ] Implement 2D spatial correlation between effect size maps
+   - [ ] Implement CNR (Contrast-to-Noise Ratio) in target vs control regions
+   - [ ] Implement paired t-tests across sessions
+   - [ ] Implement Bayes factors (BF10) computation
+
+6. **Shock/Noxious Stimulation Experiment**
+   - [ ] Determine if we have shock stimulation data available
+   - [ ] If yes, implement M4-M7 models from paper
+   - [ ] M4: Baseline running reference
+   - [ ] M5: Running across whole session
+   - [ ] M6: Shock + ShockIntensity (no running correction)
+   - [ ] M7: Shock + ShockIntensity + Running corrections
+
+### Current Priority - Single Subject Analysis & Group-Level
 
 ## Open issues
 
-We need to understand the unit of measure of wheelspeed, which will allow to understand how the identification of stationary stimuli was carried out. In the text of the paper these are defined as "trials in which wheel velocity exceeded 2 cm/s for less than 200ms during the stimulation period" (asked Chaoyi)
+None currently - wheelspeed conversion resolved (see Done section).
 
 
 
@@ -19,6 +59,16 @@ We need to understand the unit of measure of wheelspeed, which will allow to und
 
 
 ## Done
+
+- **Code refactoring and simplification (2026-02-16)**: 
+  - Wheelspeed conversion now centralized in `create_predictors.m` with proper units (cm/s)
+  - `create_predictors` now returns three outputs: `stim`, `wheel`, `stim_stationary`
+  - Stationary trial selection logic integrated into `create_predictors`
+  - Deleted obsolete functions: `get_stationary_trials.m` and `get_stationary_stim.m`
+  - All predictor creation now happens in one place (cleaner architecture)
+  - Comprehensive comments explaining wheelspeed conversion formula
+  - Conversion factor: (19*pi/1024) where 19 cm = wheel diameter, 1024 = encoder resolution
+  - Paper-accurate threshold: 2.0 cm/s for stationary trial selection
 
 - `glm.m` now returns eta2, R2, Z, p. We did not retain residuals since they would be too big
 
@@ -162,7 +212,7 @@ flowchart TB
 ## Functions
 
 `create_predictors.m`
-Creates frame-aligned stimulus boxcar and wheel speed predictors from prepPDI data (stimInfo, wheelInfo).
+Creates all predictors from prepPDI data: stimulus boxcar (all trials), wheel speed in cm/s, and stimulus boxcar for stationary trials only. Includes wheelspeed conversion and stationary trial selection logic.
 
 `prepare_data_matrix.m`
 Reshapes 3D fUSI data (PDI) from [ny × nz × T] to 2D matrix [T × V] using brain mask.
@@ -172,13 +222,7 @@ Removes first principal component from data matrix (global signal regression).
 
 ---
 
-### Predictor Transformations (3 functions)
-
-`get_stationary_trials.m`
-Paper-accurate trial selection: keeps trials where wheel > 2 cm/s for < 200ms (trial-level filtering).
-
-`get_stationary_stim.m`
-Legacy frame-level filtering: keeps stimulus frames where wheel speed < threshold (simpler, deprecated).
+### Predictor Transformations (1 function)
 
 `hrf_conv.m`
 Applies SPM canonical HRF (double-gamma) convolution to predictor for hemodynamic response modeling.
@@ -217,8 +261,8 @@ Interactive viewer: displays eta² maps, click to see voxel timeseries + model f
 | Category      | Functions | Purpose                         |
 | ------------- | --------- | ------------------------------- |
 | Data Prep     | 3         | Load and reshape data           |
-| Predictors    | 3         | Create and transform predictors |
+| Predictors    | 1         | Create and transform predictors |
 | GLM           | 3         | Fit models and remap results    |
 | Correlation   | 1         | Simple correlation analysis     |
 | Visualization | 1         | Interactive result exploration  |
-| TOTAL         | 11        | Complete pipeline               |
+| TOTAL         | 9         | Complete pipeline               |

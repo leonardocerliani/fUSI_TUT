@@ -48,7 +48,7 @@ This is to detect which stimuli were presented in the current session, and to ad
 ├─ STEP 4: Timeline synchronization
 │  │
 │  └─ synchronize_timeline()               [src/sync/]
-│      ├─ detect_ttl_edges()               [src/processing/]
+│      ├─ detect_ttl_edges()               [src/io/]
 │      │
 │      └─ LagAnalysisFusi() (optional)     [external function]
 │          └─ Analyzes IQ/RF files if available
@@ -57,27 +57,27 @@ This is to detect which stimuli were presented in the current session, and to ad
 │  │
 │  └─ detect_and_load_stimulation()        [src/events/]
 │      ├─ extract_visual_events()          [src/events/]
-│      │   └─ detect_ttl_edges()           [src/processing/]
+│      │   └─ detect_ttl_edges()           [src/io/]
 │      │
 │      ├─ extract_shock_events()           [src/events/]
-│      │   └─ detect_ttl_edges()           [src/processing/]
+│      │   └─ detect_ttl_edges()           [src/io/]
 │      │
 │      └─ extract_auditory_events()        [src/events/]
-│          └─ detect_ttl_edges()           [src/processing/]
+│          └─ detect_ttl_edges()           [src/io/]
 │
 ├─ STEP 5b: Detect and load behavioral
 │  │
-│  └─ detect_and_load_behavioral()         [src/io/]
+│  └─ detect_and_load_behavioral()         [src/events/]
 │      └─ Reads: RunningWheel.csv
 │                GSensor.csv
-│                flir_camera_time.csv
+│                pupil_camera.csv
 │
 ├─ STEP 6: Assemble and save
 │  │
-│  ├─ build_pdi_structure()                [src/assembly/]
+│  ├─ build_pdi_structure()                [src/io/]
 │  │   └─ Assembles all data into PDI struct
 │  │
-│  └─ save_pdi_data()                      [src/assembly/]
+│  └─ save_pdi_data()                      [src/io/]
 │      └─ Saves PDI.mat file
 │
 └─ STEP 7: Final summary
@@ -125,7 +125,7 @@ Data_collection/run-XXXXX-func/experiment_config.json
 }
 ```
 
-**Full config** (all stimulation types):
+**Standard config** (recommended for all experiments):
 ```json
 {
   "experiment_id": "run-XXXXX-func",
@@ -136,12 +136,14 @@ Data_collection/run-XXXXX-func/experiment_config.json
     "pdi_frame": 3,
     "experiment_start": 6,
     "experiment_start_fallback": 5,
-    "shock": [4, 5, 12],
     "visual": 10,
-    "auditory": 11
+    "auditory": 11,
+    "shock": [4, 5, 12]
   }
 }
 ```
+
+**Note:** Keep all channel fields present for consistency. Unused stimulation types are automatically ignored if their CSV files are not present. This standardized approach simplifies configuration management across different experiment types.
 
 ### 2. Run Processing
 ```matlab
@@ -174,29 +176,27 @@ PDI = do_reconstruct_functional('sample_data/Data_collection/run-115047-func');
 ├── experiment_config_template.json    # Configuration template
 ├── README.md                          # This file
 ├── memory-bank/                       # Documentation (6 markdown files)
-├── OLD_VERSION_ONE_SCRIPT/           # Original RAW_2_MAT.m for reference
+├── legacy_code/                       # Original Rawdata2MATnew.m for reference
 └── src/                              # Modular functions (15 total)
-    ├── assembly/                     # Structure building (2 functions)
-    │   ├── build_pdi_structure.m
-    │   └── save_pdi_data.m
-    ├── events/                       # Event extraction (4 functions)
+    ├── events/                       # Event extraction (5 functions)
+    │   ├── detect_and_load_behavioral.m
     │   ├── detect_and_load_stimulation.m
-    │   ├── extract_visual_events.m
+    │   ├── extract_auditory_events.m
     │   ├── extract_shock_events.m
-    │   └── extract_auditory_events.m
-    ├── io/                           # File loading (2 functions)
+    │   └── extract_visual_events.m
+    ├── io/                           # I/O operations (4 functions)
+    │   ├── build_pdi_structure.m
+    │   ├── detect_ttl_edges.m
     │   ├── load_core_data.m
-    │   └── detect_and_load_behavioral.m
-    ├── processing/                   # Signal processing (1 function)
-    │   └── detect_ttl_edges.m
+    │   └── save_pdi_data.m
     ├── sync/                         # Timeline synchronization (1 function)
     │   └── synchronize_timeline.m
     └── utils/                        # Utilities (5 functions)
-        ├── parse_config.m
         ├── generate_save_path.m
         ├── load_experiment_config.m
-        ├── print_ttl_config.m
-        └── print_final_summary.m
+        ├── parse_config.m
+        ├── print_final_summary.m
+        └── print_ttl_config.m
 ```
 
 **Sample data for testing:**
@@ -284,9 +284,12 @@ Summary:
 - `ttl_channels.auditory`: Channel for auditory stimulation
 
 ### Notes on TTL Channels
-- **Remove unused channels**: If your experiment doesn't use shock stimulation, simply omit that line
-- **Multiple shock channels**: Use array notation: `"shock": [4, 5, 12]`
-- **Channel numbers**: Update based on your specific setup
+- **Keep all fields present**: Use the same config structure for all experiments (visual, auditory, shock)
+- **Unused types auto-ignored**: If a stimulation CSV file is not present, that type is automatically skipped
+- **Shock channels**: Specify as array `[4, 5, 12]` - code intelligently selects appropriate channels based on shock type detected in CSV:
+  - Tail shock: uses channels 5 and/or 12
+  - Left/Right shock: uses channels 4 and/or 12
+- **Channel numbers**: Standard assignments are 10 (visual), 11 (auditory), [4,5,12] (shock) - update if your setup differs
 
 ## Auto-Detection
 
@@ -300,7 +303,7 @@ The pipeline automatically detects and processes:
 ### Behavioral Data (always checked)
 - `RunningWheel.csv` → `PDI.wheelInfo`
 - `GSensor.csv` → `PDI.gsensorInfo`
-- `flir_camera_time.csv` → `PDI.pupil.pupilTime`
+- `pupil_camera.csv` → `PDI.pupil.pupilTime`
 
 ### Core Data (required)
 - `FUSI_data/fUS_block_PDI_float.bin`
@@ -404,7 +407,7 @@ For issues or questions:
 
 ## About This Pipeline
 
-This is a **refactored version** of the original `RAW_2_MAT.m` script (preserved in `OLD_VERSION_ONE_SCRIPT/` for reference). The refactored version provides:
+This is a **refactored version** of the original `Rawdata2MATnew.m` script (preserved in `legacy_code/` for reference). The refactored version provides:
 - Modular architecture (15 focused functions)
 - Per-experiment JSON configuration
 - Clear terminal feedback

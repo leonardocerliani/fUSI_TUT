@@ -43,6 +43,9 @@
    - `auditoryStimulation.csv`: Audio stimulus timing (if present)
    
    - `ShockStimulation.csv`: Shock stimulus metadata (if present)
+     - Columns: time, stim, event, duration
+     - First row (index 2) contains shock type: "shock_tail", "shock_left", "shock_right"
+     - Used for smart TTL channel selection
    
    - `GSensor.csv`: Accelerometer data
      - Columns: time, samplenum, x, y, z
@@ -56,8 +59,10 @@
 
 4. **JSON Files**:
    - `experiment_config.json`: Per-run TTL channel configuration
-     - TTL channel assignments (the main variable between experiments)
+     - TTL channel assignments (can vary between experiments)
      - Experiment metadata
+     - **Best practice**: Keep all channel fields present for consistency; unused types ignored automatically
+     - Shock channels can be an array `[4, 5, 12]` for smart selection based on shock type
    - `settings.json`: Experiment settings
      - Sensor configurations
      - Stimulation parameters
@@ -82,15 +87,40 @@
 ### 1. TTL Synchronization
 **Purpose**: Hardware timing signals synchronize multiple acquisition systems
 
-**Channel Mapping** (from sample data):
+**Standard TTL Channel Mapping for Stimuli**:
+
+| Channel | Purpose | Stimulus Type | Edge Detection |
+|---------|---------|---------------|----------------|
+| **10** | Visual stimulation | Visual | Rising edge = onset, Falling edge = offset |
+| **11** | Auditory/Ultrasound stimulation | Audio/Ultrasound | Rising edge = onset, Falling edge = offset |
+| **4** | Shock left (ShockOBSCTL) | Shock | Varies by protocol |
+| **5** | Shock tail (ShockTail) | Shock | Varies by protocol |
+| **12** | General shock | Shock | Varies by protocol |
+
+**Other Important Channels**:
 - Channel 1: Time (timestamp column)
 - Channel 3: Events (PDI frame markers)
-- Channel 4: ShockOBSCTL stimulation
-- Channel 5: ShockTail stimulation
-- Channel 6: AdjustPDItime marker
-- Channel 10: Visual stimulation
-- Channel 11: Auditory stimulation
-- Channel 12: Shock (general)
+- Channel 6: AdjustPDItime marker (experiment start)
+
+**Shock Stimulation - Smart Channel Selection**:
+Shock events use intelligent channel selection based on shock type detected from `ShockStimulation.csv`:
+- **Tail shock**: Uses channels 5 and/or 12 (if present in config `[4,5,12]`)
+- **Left/Right shock**: Uses channels 4 and/or 12 (if present in config `[4,5,12]`)
+- Edge detection uses OR logic across selected channels to avoid duplicates
+- Config can specify all possible channels `[4,5,12]` - code automatically selects appropriate subset
+
+**Code References**:
+- Visual: Line 232 in `Rawdata2MATnew.m` → `diff(TTLinfo(:,10))`
+- Auditory: Line 249 in `Rawdata2MATnew.m` → `diff(TTLinfo(:,11))`
+- Shock (tail): Line 222 in `Rawdata2MATnew.m` → `diff(TTLinfo(:,5))` or `diff(TTLinfo(:,12))`
+- Shock (left/right): Line 229 in `Rawdata2MATnew.m` → `diff(TTLinfo(:,4))` or `diff(TTLinfo(:,12))`
+- Refactored: `extract_shock_events.m` uses smart channel selection matching legacy behavior
+
+**Important Notes**:
+- While these are typical/standard assignments, channel mappings can vary between experiments
+- Always keep all channel fields in `experiment_config.json` for consistency across experiments
+- Unused stimulation types are automatically ignored if their CSV files are not present
+- The refactored pipeline reads channel assignments from configuration files to handle variability
 
 **Critical Operations**:
 - Detect edges: `diff(TTLinfo(:,channel)) < 0` (falling) or `> 0` (rising)
@@ -238,5 +268,7 @@ savepath = fullfile(datapath(1:tmpInd1-1), 'Data_analysis', ...
 1. **Always validate file existence** before reading
 2. **Handle missing optional files** gracefully (e.g., pupil camera, wheel)
 3. **Verify TTL synchronization** by checking expected vs actual frame counts
-4. **Document channel mapping** per experiment (future improvement needed)
+4. **Document channel mapping** per experiment in `experiment_config.json`
 5. **Preserve original timestamps** alongside aligned timestamps for debugging
+6. **CSV file reading**: When reading CSV files for inspection or validation, read at most the first 40 rows to avoid unnecessary data loading and improve performance
+   - Example: `head -40 filename.csv` (command line) or `readmatrix(filename, 'NumHeaderLines', 0, 'Range', '1:40')` (MATLAB)

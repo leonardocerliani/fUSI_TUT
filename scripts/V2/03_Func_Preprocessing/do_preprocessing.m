@@ -51,6 +51,18 @@ if nargin < 3
     atlasPath = [];
 end
 
+
+%% ONLY FOR TESTING!!!
+
+anatPath='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/data/Data_analysis/ses-231215/run-113409-anat';
+funcPath='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/data/Data_analysis/ses-231215/run-115047-func';
+atlasPath='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/scripts/V2/allen_brain_atlas';
+
+
+
+
+
+
 %% Load all required data
 
 fprintf('=== Loading Data ===\n');

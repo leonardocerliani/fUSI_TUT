@@ -1,6 +1,6 @@
 # Current Status - GLM Analysis Pipeline
 
-**Last Updated**: 2026-02-13 3:20 PM
+**Last Updated**: 2026-02-16 10:49 AM
 
 ## ✅ Version 3.0 Complete - Full Statistics & Interactive Visualization
 
@@ -145,21 +145,36 @@ all_results.M1_corr:
 
 ## Important Technical Notes
 
-### 1. Wheel Speed Units
-⚠️ **wheelInfo.wheelspeed is in mm/s, NOT cm/s**
+### 1. Wheel Speed Units ✅ RESOLVED (2026-02-16)
+⚠️ **wheelInfo.wheelspeed contains raw encoder counts, NOT cm/s**
 
-Paper says "2 cm/s" but data is in mm/s:
+**Correct conversion formula:** `wheelspeed_cm_s = raw_counts * (19*pi/1024)`
+
+**Physical meaning:**
+- 19 cm = wheel diameter (radius = 9.5 cm)
+- π converts diameter to circumference: C = π*d = 19π ≈ 59.7 cm
+- 1024 = rotary encoder resolution (counts per full rotation)
+- Therefore: each count = (19π)/1024 ≈ 0.0584 cm of linear movement
+
+**Implementation:**
+- Conversion applied in `create_predictors.m` after interpolation to frame times
+- Matches colleague's original preprocessing: `PDI.wheelSpeed = 19*pi/1024*interp1(...)`
+- Stationary trial threshold now uses paper-accurate: **2.0 cm/s** (not 20.0)
+
 ```matlab
-% Paper criterion: 2 cm/s
-% Actual threshold: 20 mm/s (equivalent)
-stim_stationary = get_stationary_trials(data, 20.0, 200);
+% In create_predictors.m:
+wheel = interp1(data.wheelInfo.time, data.wheelInfo.wheelspeed, frame_times, 'linear');
+wheel = fillmissing(wheel, 'nearest');
+wheel = wheel * (19*pi/1024);  % Convert encoder counts to cm/s
+wheel = abs(wheel);
+
+% In do_analysis_methods_paper.m:
+stim_stationary = get_stationary_trials(data, 2.0, 200);  % Now correct!
 ```
 
-**How we discovered this:**
-- Initial threshold of 2.0 resulted in 0 valid trials
-- wheelInfo summary: median=163, max=505
-- Clearly not cm/s given those values
-- Changed to 20.0 (mm/s equivalent) → reasonable trial selection
+**Additional info:**
+- wheelInfo sampling rate ≈ 55 Hz (mean interval ≈ 0.0179 sec)
+- Raw encoder values were already in appropriate units for the formula
 
 ### 2. Design Matrix Storage
 For viewer to work, must store design matrix `.X` in results:
@@ -269,7 +284,47 @@ All known issues resolved!
 - **Quality control**: Automated QC checks and reports
 - **Results export**: Export to NIfTI or other formats
 
-## Session Summary (Feb 13, 2026)
+## Session Summary
+
+### Feb 16, 2026 - Code Refactoring & Simplification
+
+**Major refactoring to eliminate code duplication and improve architecture:**
+
+1. **Unified Predictor Creation** - `create_predictors.m` now returns 3 outputs:
+   - `stim` - all stimulus trials
+   - `wheel` - wheel speed in cm/s  
+   - `stim_stationary` - stationary trials only
+   
+2. **Wheelspeed Conversion Resolved**:
+   - Raw data is encoder counts per second
+   - Conversion factor: (19*pi/1024) where 19 cm = wheel diameter
+   - Physical meaning: each encoder count = 0.0584 cm linear movement
+   - Conversion happens once in `create_predictors.m` before interpolation
+   
+3. **Deleted Redundant Functions**:
+   - ❌ `get_stationary_trials.m` - logic moved into `create_predictors`
+   - ❌ `get_stationary_stim.m` - legacy frame-level method (not paper-accurate)
+   
+4. **Simplified Main Script**:
+   ```matlab
+   % Before (multiple steps):
+   [stim, wheel] = create_predictors(data);
+   stim_stationary = get_stationary_trials(data, 2.0, 200);
+   
+   % After (single step):
+   [stim, wheel, stim_stationary] = create_predictors(data, 2.0, 200);
+   ```
+
+5. **Benefits**:
+   - ✅ All predictor creation in one place
+   - ✅ Single wheelspeed conversion (no duplication)
+   - ✅ Cleaner, more maintainable code
+   - ✅ Reduced from 11 to 9 functions
+   - ✅ Paper-accurate stationary trial selection preserved
+
+**Function Count**: Now 9 total functions (was 11)
+
+### Feb 13, 2026
 
 ### Morning (11:05 AM)
 - Added predictor labels to GLM function

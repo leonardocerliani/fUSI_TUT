@@ -1,4 +1,4 @@
-function warpedAnatomic = Transform_Individual_2_Atlas(anatomic_dir, dispFieldI2A)
+function warpedAnatomic = s03_Transform_Individual_2_Atlas(anatomic_dir, dispFieldI2A)
 % Individual_2_Atlas warps individual anatomy to atlas space and saves the result.
 %
 % USAGE:
@@ -15,9 +15,11 @@ function warpedAnatomic = Transform_Individual_2_Atlas(anatomic_dir, dispFieldI2
 %   warpedAnatomic - Struct with anatomical data transformed to atlas space
 %
 % NOTES:
-%   - Saves two files in the same folder as 'anatomic.mat':
+%   - Saves files in the same folder as 'anatomic.mat':
 %       1. anatomic_2_atlas.mat  - MATLAB struct with transformed anatomy
 %       2. anatomic_2_atlas.nii  - NIfTI file with transformed anatomy
+%       3. slice_2_atlas.nii - NIfTI file with selected slice transformed (if funcSlice exists)
+%       4. slice_2_atlas_mask.nii - Binary mask of selected slice in atlas space (if funcSlice exists)
 %   - Opens a 16-slice visualization of the warped anatomy overlaid on the atlas.
 %
 % EXAMPLE:
@@ -143,6 +145,73 @@ else
     
     % Save as NIFTI in the same folder as anatomic.mat
     save_nifti(hdr, fullfile(anatomic_dir, 'anatomic_2_atlas.nii'));
+end
+
+
+% -----------------------------------------------
+% Transform selected functional slice if it exists
+% -----------------------------------------------
+if isfield(anatomic, 'funcSlice')
+    fprintf('\n→ Found funcSlice: [%d, %d, %d]\n', anatomic.funcSlice(1), anatomic.funcSlice(2), anatomic.funcSlice(3));
+    
+    % Extract the selected slice from the individual anatomy
+    slice_individual = zeros(size(anatomic.Data));
+    slice_individual(:, :, anatomic.funcSlice(3)) = anatomic.Data(:, :, anatomic.funcSlice(3));
+    
+    % Prepare slice structure for interpolation
+    slice_struct = anatomic;
+    slice_struct.Data = slice_individual;
+    
+    % Transform slice to atlas space
+    fprintf('→ Transforming selected slice to atlas space...\n');
+    sliceInterp = interpolate3D(atlas, slice_struct);
+    sliceAffineTransformed = imwarp(sliceInterp.Data, T, 'nearest', 'OutputView', ref);
+    
+    if ~isempty(dispFieldI2A)
+        slice_2_atlas = imwarp(sliceAffineTransformed, dispFieldI2A, 'nearest');
+    else
+        slice_2_atlas = sliceAffineTransformed;
+    end
+    
+    % Save slice_2_atlas.nii
+    hdr_slice = load_nifti(atlas_nii_path);
+    hdr_slice.vol = slice_2_atlas;
+    save_nifti(hdr_slice, fullfile(anatomic_dir, 'slice_2_atlas.nii'));
+    fprintf('✓ Saved: slice_2_atlas.nii\n');
+    
+    
+    % -----------------------------------------------
+    % Create and transform binary mask of selected slice
+    % -----------------------------------------------
+    fprintf('→ Creating binary mask of selected slice...\n');
+    
+    % Create binary mask in individual space
+    mask_individual = zeros(size(anatomic.Data));
+    mask_individual(:, :, anatomic.funcSlice(3)) = 1;
+    
+    % Prepare mask structure for interpolation
+    mask_struct = anatomic;
+    mask_struct.Data = mask_individual;
+    
+    % Transform mask to atlas space
+    maskInterp = interpolate3D(atlas, mask_struct);
+    maskAffineTransformed = imwarp(maskInterp.Data, T, 'nearest', 'OutputView', ref);
+    
+    if ~isempty(dispFieldI2A)
+        slice_2_atlas_mask = imwarp(maskAffineTransformed, dispFieldI2A, 'nearest');
+    else
+        slice_2_atlas_mask = maskAffineTransformed;
+    end
+    
+    % Save slice_2_atlas_mask.nii
+    hdr_mask = load_nifti(atlas_nii_path);
+    hdr_mask.vol = slice_2_atlas_mask;
+    save_nifti(hdr_mask, fullfile(anatomic_dir, 'slice_2_atlas_mask.nii'));
+    fprintf('✓ Saved: slice_2_atlas_mask.nii\n\n');
+    
+else
+    fprintf('\n→ No funcSlice found. Skipping slice transformation.\n');
+    fprintf('  (Run s02_Select_Anatomical_Slice to define a functional slice)\n\n');
 end
 
 

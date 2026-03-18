@@ -256,16 +256,60 @@ PDI = do_reconstruct_functional(datapath);
 % sample_data/Data_analysis/run-115047-func/PDI.mat
 ```
 
-## Project Complete ✅
+## Recent Updates (January 2026)
 
-All objectives met:
-- ✅ Modular refactoring complete
-- ✅ Configuration system implemented
-- ✅ Terminal output with feedback
-- ✅ Documentation comprehensive
+### Configuration & Shock Events Refinement ✅
+
+**Issue Identified**: Shock event extraction needed improvement
+- Original had complex logical array building that was hard to read
+- Channel configuration approach needed standardization
+
+**Changes Made**:
+1. **Simplified shock extraction** (`extract_shock_events.m`)
+   - Returned to inline OR logic matching legacy style
+   - Fixed bug: changed from `stimInfo.type{2}` to `stimInfo.event{2}` (correct CSV column)
+   - Maintained smart channel selection (tail shock: 5,12 / left/right shock: 4,12)
+   - Reduced from 95 lines to 62 lines while maintaining functionality
+   - Added clear documentation about hardcoded channels
+
+2. **Standardized configuration approach**
+   - All experiments use same config structure
+   - Keep all TTL channel fields present (visual, auditory, shock)
+   - Unused stimulation types automatically ignored if CSV files absent
+   - Shock channels specified as array `[4, 5, 12]` but code selects appropriately
+
+3. **Directory reorganization**
+   - Renamed `src/events_and_sensors/` → `src/events/`
+   - Renamed `detect_and_load_sensors.m` → `detect_and_load_behavioral.m`
+   - Total: 15 functions (5 events, 4 io, 1 sync, 5 utils)
+
+4. **Documentation updates**
+   - Fixed README dependency tree (correct function locations)
+   - Updated directory structure (15 functions total)
+   - Fixed file references (`pupil_camera.csv` not `flir_camera_time.csv`)
+   - Added TTL channel documentation to memory bank
+   - Added CSV reading best practice (max 40 rows)
+
+5. **Final consistency check**
+   - Verified refactored code produces identical output to legacy
+   - All processing steps match `Rawdata2MATnew.m` behavior
+   - PDI structure format identical
+   - Smart channel selection preserved
+
+## Project Status: COMPLETE & REFINED ✅
+
+All objectives met + improvements:
+- ✅ Modular refactoring complete (15 focused functions)
+- ✅ Configuration system implemented and standardized
+- ✅ Terminal output with clear feedback
+- ✅ Documentation comprehensive and accurate
 - ✅ **TESTED SUCCESSFULLY** on real data
 - ✅ All bugs fixed during testing
-- ✅ PDI.mat output verified
+- ✅ PDI.mat output verified identical to legacy
+- ✅ Shock extraction simplified and debugged
+- ✅ Configuration approach standardized
+- ✅ Directory structure organized
+- ✅ README fully updated and accurate
 - ✅ All files in correct location
 
 **Ready for production use!** 🎉

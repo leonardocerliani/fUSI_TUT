@@ -1,4 +1,4 @@
-function [anatomic] = Register_Anatomic_2_Atlas
+function [anatomic] = s01_Register_Anatomic_2_Atlas
 %   RegisterAnatomic performs the following steps:
 %       1. Launches a UI to select a RUN folder from the DATA COLLECTION folder
 %          containing the raw anatomical scan data.
