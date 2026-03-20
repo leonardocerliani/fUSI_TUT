@@ -1,5 +1,17 @@
 # do_preprocessing.m - Technical Documentation
 
+---
+
+## 📚 Documentation Navigation
+
+You are viewing the **technical documentation** with complete implementation details.
+
+**Other documentation levels:**
+- 📖 **[User Guide](../README_FUNC_PREPROCESSING.md)** - Quick start and usage examples
+- 📝 **[Code Walkthrough](README_preprocessing_walkthrough.md)** - Step-by-step explanation
+
+---
+
 ## Table of Contents
 
 ### Overview & Setup

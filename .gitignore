@@ -3,3 +3,6 @@ atlas_and_rawdata/
 scripts/V0*/
 .DS_Store
 videos/
+chaoyi_paper_md/
+*PDI.mat
+

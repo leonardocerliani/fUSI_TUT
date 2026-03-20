@@ -1,10 +1,16 @@
 # Understanding Stationary Trial Selection
 
-## The Paper Criterion
+## Criterion in Chaoyi's paper
 
-> **"trials in which wheel velocity exceeded 2 cm/s for less than 200ms during the stimulation period"**
+> **"[stationary trials are identified as those] in which wheel velocity did **not** exceeded 2 cm/s for less than 200ms during the stimulation period"**
 
-This means: **Keep trials where the mouse NEVER moved continuously for more than 200ms at speeds > 2 cm/s**
+Therefore to determine stationary trials we need to 
+- isolate the time points of each trial
+- identify the _contigous_ time points in which the speed exceeded 2cm/s. We call each of these a connected component.
+- consider the largest connected component.
+- _reject_ the whole trial if the duration of this largest connected component exceeds 200 ms
+
+In other words, we keep trials where the mouse NEVER moved continuously for more than 200ms at speeds > 2 cm/s
 
 ---
 
@@ -16,11 +22,11 @@ In summary:
 
 - in `wheelInfo.wheelspeed` there is the count of wheel portions per second. The entire circumference of the wheel has 2^10 (1024) counts, and a circumference of 19\*pi = 59.69 cm, therefore one wheel portion is (19\*pi/1024) ≈ 0.0584 cm.
 
-- Therefore we first need to check which samples of wheelspeed contain more than 35 counts, since the threshold is 2cm (2/0.0584 = 34.26).
+- Therefore we first need to check which samples of wheelspeed contain more than 35 counts, since the threshold is 2cm/s (2/0.0584 = 34.26).
 
 - At this point we check how many contigous sections *above threshold* (so above 35) are found.
 
-- The other criterion is that the mouse must not have moved for more than 2cm in a time of 200ms. Therefore we need to convert this to number of portions which represent this threshold. Since the sampling of the wheel is 55Hz, the number of samples needed to encode 200ms or 0.2s is about 11 (0.2/(1/55)) = 10.989.
+- The other criterion is that the mouse must not have moved for more than 2cm/s in a time of 200ms. Therefore we need to convert this to number of portions which represent this threshold. Since the sampling of the wheel is 55Hz, the number of samples needed to encode 200ms or 0.2s is about 11 (0.2/(1/55)) = 10.989.
 
 - Therefore the last thing to do is to check if the number of contigous portions of the wheelrecording which *exceed* 2cm/s is lower than 11.1 samples. Only those stimuli will be deemed as stationary.
 

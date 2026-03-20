@@ -375,6 +375,9 @@ where:
 - `all_results.M1.X = [M1_predictors, ones(size(M1_predictors,1),1)]` : Store complete design matrix (including intercept) for interactive viewer. The viewer needs this to overlay predictors on the timeseries plot
 
 
+⚠️ **IMPORTANTLY, if no stationary trials are found, the estimation of the M1* models will be skipped and noted as such in the prepPDI.mat**
+
+
 Finally, the results can be viewed - interactively - with the 
 ```
 view_glm_results(all_results, data, 'M3')
@@ -383,3 +386,16 @@ view_glm_results(all_results, data, 'M3')
 ![](./assets/results_viewer.png)
 
 By pointing and clicking on a location in the eta2 plot, the signal, model fit, R2 and predictors time course (convolved with hrf if specified) will be displayed for that location.
+
+
+## 5. Saving the results
+```matlab
+fprintf('\nSaving results to prepPDI.mat...\n');
+data.glm_results = all_results;
+
+% Save back to the same file (overwrites original)
+save('prepPDI.mat', 'data', '-v7.3');
+```
+
+The results are saved in a field `all_results` within the original `prepPDI.mat`
+

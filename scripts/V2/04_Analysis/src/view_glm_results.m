@@ -20,6 +20,14 @@ function view_glm_results(all_results, data, model_name)
 %% Get model results
 model = all_results.(model_name);
 
+% Check if model was skipped (e.g., M1 when no stationary trials)
+if isfield(model, 'skipped') && model.skipped
+    fprintf('Model %s was skipped: %s\n', model_name, model.reason);
+    msgbox(sprintf('Model %s was skipped.\nReason: %s', model_name, strrep(model.reason, '_', ' ')), ...
+           'Model Skipped', 'warn');
+    return;
+end
+
 % Get labels and design matrix
 pred_labels = model.predictor_labels;
 X = model.X;  % Design matrix [T × p]
@@ -46,6 +54,7 @@ map_width = left_width / map_cols;
 map_height = 0.85 / map_rows;
 
 % Create axes for each predictor's eta²
+eta2_axes = gobjects(n_predictors, 1);  % Store all axes handles
 for i = 1:n_predictors
     row = ceil(i / map_cols);
     col = mod(i-1, map_cols) + 1;
@@ -55,6 +64,7 @@ for i = 1:n_predictors
     bottom_pos = 0.95 - row * map_height;
     
     ax_eta2 = axes('Position', [left_pos, bottom_pos, map_width*0.85, map_height*0.8]);
+    eta2_axes(i) = ax_eta2;  % Store this axis handle
     
     % Extract eta² map for this predictor
     eta2_map = squeeze(model.eta2(i,:,:));
@@ -68,17 +78,14 @@ for i = 1:n_predictors
     xlabel('X'); ylabel('Y');
     set(gca, 'FontSize', 9);
     
-    % Only make FIRST predictor's map clickable
-    if i == 1
-        set(hImg,'ButtonDownFcn',@clickCallback)
-        ax1 = ax_eta2;  % Store for callback
-    end
+    % Make ALL maps clickable
+    set(hImg,'ButtonDownFcn',@clickCallback)
 end
 
 %% Right panel: Fixed position for timeseries plots (always same size)
 % Right panel starts at 55% of width, takes 40%
 ax2 = axes('Position', [0.56, 0.55, 0.40, 0.38]);
-title('Click first eta² map to see voxel timeseries')
+title('Click any eta² map to see voxel timeseries')
 xlabel('Time (s)'); ylabel('Signal');
 set(gca, 'FontSize', 10);
 
@@ -95,10 +102,10 @@ viewer_data.time = data.time;
 viewer_data.X = X;
 viewer_data.betas = model.betas;  % [p × ny × nz]
 viewer_data.pred_labels = pred_labels;
-viewer_data.ax1 = ax1;
+viewer_data.eta2_axes = eta2_axes;  % Array of all eta² map axes
 viewer_data.ax2 = ax2;
 viewer_data.ax3 = ax3;
-viewer_data.marker = gobjects(1);
+viewer_data.markers = gobjects(n_predictors, 1);  % One marker per eta² map
 guidata(gcf, viewer_data);
 
 end
@@ -108,8 +115,9 @@ function clickCallback(~,~)
     
     viewer_data = guidata(gcf);
     
-    % Get click location
-    cp = get(viewer_data.ax1,'CurrentPoint');
+    % Get click location from whichever axis was clicked
+    clicked_ax = gca;  % Get current (clicked) axis
+    cp = get(clicked_ax,'CurrentPoint');
     x = round(cp(1,1));
     y = round(cp(1,2));
     
@@ -171,14 +179,18 @@ function clickCallback(~,~)
         grid on;
         ylim([-0.1 1.1]);
         
-        %% Highlight selected voxel on map
-        axes(viewer_data.ax1)
-        hold on
-        if isgraphics(viewer_data.marker)
-            delete(viewer_data.marker)
+        %% Highlight selected voxel on ALL eta² maps
+        for i = 1:length(viewer_data.eta2_axes)
+            axes(viewer_data.eta2_axes(i))
+            hold on
+            % Delete old marker if it exists
+            if isgraphics(viewer_data.markers(i))
+                delete(viewer_data.markers(i))
+            end
+            % Plot new marker at same location on each map
+            viewer_data.markers(i) = plot(x, y, 'c.', 'MarkerSize', 30);
+            hold off
         end
-        viewer_data.marker = plot(x, y, 'c.', 'MarkerSize', 30);
-        hold off
         
         % Store updated data
         guidata(gcf, viewer_data);

@@ -13,16 +13,23 @@
 
 
 
+![](./assets/anat_recon_reg_procedure.png)
+
+
+
 ## Overview
 
-Three scripts are to be run, in the order specified here. Since they can be used independently in different phases of the data acquisition/processing, they have been left in individual files.
+Our current fUS setting allows acquiring data only from one specific slice in the brain. Therefore we need to identify it before the experiment.
 
+To do so we acquire an "anatomical" image - _de facto_ a functional scan on multiple locations, and after reconstruction we select the desired slice. Finally we can proceed to acquire the actual fUS data from this slice.
 
+Three scripts are to be run, in the order specified here. 
 
 `Register_Anatomic_2_Atlas.m`
 
 - First we need to reconstruct the anatomical bin file into a mat structure. This is similar - but simpler - to what is done for functional data.
 - A UI is then launched to (optionally) crop the data, and finally to register the anatomic data to the allen atlas. 
+- Here we should select the appropriate run folder in the `Data Acquisition` directory.
 - Remember to press `save` after you have realigned the anatomical to the allen atlas!
 - The result is an `anatomic.mat` and a `Transformation.mat` files in the DATA_ANALYSIS folder.
 
@@ -31,7 +38,9 @@ Three scripts are to be run, in the order specified here. Since they can be used
 `Select_Anatomical_Slice.m`
 
 - Once the anatomical has been acquired, reconstructed and registered to Allen space, we must select which slice of the anatomical we want to use for the functional acquisition
+- From now on, we select folders from the `Data_analysis` directory.
 - The registration to Allen was necessary since we need to check which slice we want to select on the Allen atlas
+- When launching the script, select the appropriate run subfolder in the _Data_analysis_ folder
 - No output is generated. Rather a field `.funcSlice` is added to the `anatomic.mat`
 
 
@@ -91,7 +100,7 @@ allen_brain_atlas.mat
 5. Registers the processed scan to the Allen Brain Atlas.
 6. Saves the transformation in `Transformation.mat`.
 
-NB: If a Transformation.mat is already present, it is loaded instead of launching the registration UI.
+**NB: If a Transformation.mat is already present, it is loaded instead of launching the registration UI**
 
 
 
@@ -99,9 +108,7 @@ NB: If a Transformation.mat is already present, it is loaded instead of launchin
 
 `Registration/Select_Anatomical_Slice.m`
 
-DEPENDENCIES: None
-
-
+`DEPENDENCIES: None`
 
 **The reconstruction and registration is mostly done during the experiment**. In this session, the experimenter also checks the registration on the atlas in mricro and notes down which slice should be chosen. This appears then in the anatomic.mat as the field `.funcSlice(3)`
 
@@ -122,7 +129,7 @@ For the moment - since I don't know how the interaction with MRIcro is done - I 
 **Noteworthy**:
 
 - I added a uigetdir prompt for the directory since the `anatomic.mat` file in which the `.funcSlice` field is written is specified in the `.savepath` field, so if might not be the currently loaded anatomic variable in the working environment.
-- the script records the desired slice in a 3 element array like `[79,45,19]`, but for some reason only the last number (which is probably the slice number) is used. You can see this e.g. in the `Preprocessing.m` script. **We should investigate this further**. 
+- the script records the desired slice in a 3 element array like `[79,45,19]`, but only the last number - which is the slice number of the selected slice - is used. You can see this e.g. in the `Preprocessing.m` script. **We should investigate this further**. 
 
 
 
@@ -149,6 +156,8 @@ Required arguments from command line: None.
 - Transformation.mat
 - allen_brain_atlas.mat
 - allen.nii
+
+**NB: At this stage it is important to make sure that the allen brain atlas is available in the path**
 
 
 

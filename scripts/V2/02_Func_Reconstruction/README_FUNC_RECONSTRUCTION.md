@@ -5,13 +5,49 @@ Modular, configurable pipeline for converting raw fUSI data to structured MAT fo
 
 **Main Script**: `do_reconstruct_functional.m`
 
+📖 **For a detailed step-by-step walkthrough of what the code does, see:**  
+[Code Walkthrough](docs/README_reconstruction_walkthrough.md)
+
 ## Three main procedures:
 
+## 0. Provide a json file with the experiment configuration 
+
+A file named `experiment_config.json` must be available in the Data_collection folder.
+
+The crucial information in this file is the channel number for different source of data. For instance:
+
+**→ [See detailed walkthrough: Load Configuration](docs/README_reconstruction_walkthrough.md#2-load-configuration)**
+
+```json
+{
+  "experiment_id": "run-115047-func",
+  "date": "2023-12-15",
+  "description": "Visual stimulation with running wheel and gsensor",
+  
+  "ttl_channels": {
+    "pdi_frame": 3,
+    "experiment_start": 6,
+    "experiment_start_fallback": 5,
+    "visual": 10
+  }
+}
+```
+
+
+
 ### 1. Reconstructing a 3D pdi
+
 Starting from the binary file `fUS_block_PDI_float.bin`, we use the `L22-14_PlaneWave_FUSI_data.mat` (in the script is `BFconfig`) to detect the shape of the 3D data, reshape the binary and store it in a struct.
 
+**→ [See detailed walkthrough: Load Core Data](docs/README_reconstruction_walkthrough.md#3-load-core-data)**
+
+
+
 ### 2. Assigning time stamps
+
 The `TTL*.csv` file contains the time stamp of many events in the experiment, including the pdi acquisition as well as other events such as stimuli. This allows to establish a common temporal reference.
+
+**→ [See detailed walkthrough: Timeline Synchronization](docs/README_reconstruction_walkthrough.md#4-timeline-synchronization)**
 
 We use a specific channel (usually ch3) in the TTL data to get the timing of the pdi frame acquisition.
 
@@ -28,14 +64,24 @@ Remove all the frames before the first presentation, so that this occurs at time
 - remove frames with negative time stamps in pdiData
 ```
 
+
+
 ### 3. Assign time stamps to other events
+
 This is to detect which stimuli were presented in the current session, and to add them as well other measurements - e.g. wheel - to the final `PDI.mat`.
+
+**→ [See detailed walkthrough: Detect Stimulation and Behavioral Data](docs/README_reconstruction_walkthrough.md#5-detect-stimulation-and-behavioral-data)**
+
 
 
 ## Dependencies
- 
+
+**For detailed explanation of each step, see:** [Code Walkthrough](docs/README_reconstruction_walkthrough.md)
+
 ```
  do_reconstruct_functional.m
+├─ STEP 1: Get the data path from datapath (arg to the fn or uigetdir)
+├─ STEP 2: Load the experiment_config.json
 │
 ├─ STEP 3: Load core data
 │  │
@@ -100,6 +146,8 @@ This is to detect which stimuli were presented in the current session, and to ad
 - **Modular design**: Easy to modify, test, and extend individual components
 - **Config travels with data**: Each experiment has its own config file
 
+
+
 ## Quick Start
 
 ### 1. Create Config File
@@ -145,7 +193,10 @@ Data_collection/run-XXXXX-func/experiment_config.json
 
 **Note:** Keep all channel fields present for consistency. Unused stimulation types are automatically ignored if their CSV files are not present. This standardized approach simplifies configuration management across different experiment types.
 
+
+
 ### 2. Run Processing
+
 ```matlab
 % Navigate to 02_Functional_Reconstruction folder
 cd('/path/to/02_Functional_Reconstruction')
@@ -167,6 +218,8 @@ PDI = do_reconstruct_functional(datapath, savepath);
 cd 02_Functional_Reconstruction
 PDI = do_reconstruct_functional('sample_data/Data_collection/run-115047-func');
 ```
+
+
 
 ## Directory Structure
 
@@ -213,6 +266,8 @@ sample_data/
     └── run-115047-func/
         └── PDI.mat
 ```
+
+
 
 ## Terminal Output Example
 
@@ -268,6 +323,8 @@ Summary:
 ========================================
 ```
 
+
+
 ## Configuration Options
 
 ### Required Fields
@@ -276,20 +333,28 @@ Summary:
 - `ttl_channels.pdi_frame`: Channel for PDI frame markers
 - `ttl_channels.experiment_start`: Channel for experiment start marker
 
+
+
 ### Optional Fields
+
 - `description`: Brief description of experiment
 - `ttl_channels.experiment_start_fallback`: Fallback channel if primary fails
 - `ttl_channels.shock`: Channel(s) for shock stimulation (can be array)
 - `ttl_channels.visual`: Channel for visual stimulation
 - `ttl_channels.auditory`: Channel for auditory stimulation
 
+
+
 ### Notes on TTL Channels
+
 - **Keep all fields present**: Use the same config structure for all experiments (visual, auditory, shock)
 - **Unused types auto-ignored**: If a stimulation CSV file is not present, that type is automatically skipped
 - **Shock channels**: Specify as array `[4, 5, 12]` - code intelligently selects appropriate channels based on shock type detected in CSV:
   - Tail shock: uses channels 5 and/or 12
   - Left/Right shock: uses channels 4 and/or 12
 - **Channel numbers**: Standard assignments are 10 (visual), 11 (auditory), [4,5,12] (shock) - update if your setup differs
+
+
 
 ## Auto-Detection
 
@@ -341,6 +406,8 @@ PDI =
     savepath: [char]            % Output directory
 ```
 
+
+
 ## Troubleshooting
 
 ### Missing Config File
@@ -361,19 +428,26 @@ PDI =
 - TTL CSV file
 - DAQ/NIDAQ CSV file
 
+
+
 ## Differences from Original
 
 ### What Changed
 1. **Configuration**: TTL channels now in JSON file, not hardcoded
-2. **Modularity**: 15 focused functions instead of one 493-line function
+2. **Modularity**: 15 focused functions instead of one monolithic function
 3. **Terminal output**: Clear status messages throughout processing
 4. **Error handling**: Helpful messages when config missing
 
+
+
 ### What Stayed the Same
+
 1. **Output format**: PDI structure identical to original
 2. **Processing logic**: Same algorithms (edge detection, lag correction, etc.)
 3. **File locations**: Data and output paths work the same way
 4. **Dependencies**: Still uses LagAnalysisFusi for lag correction
+
+
 
 ## Advanced Usage
 
@@ -397,6 +471,8 @@ savepath = '/custom/output/location';
 PDI = do_reconstruct_functional(datapath, savepath);
 ```
 
+
+
 ## Support
 
 For issues or questions:
@@ -404,6 +480,8 @@ For issues or questions:
 2. Verify TTL channel numbers match your setup
 3. Ensure all required data files are present
 4. Check MATLAB path includes `02_Functional_Reconstruction/src/` directories (auto-added by script)
+
+
 
 ## About This Pipeline
 

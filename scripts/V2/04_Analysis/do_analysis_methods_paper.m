@@ -20,11 +20,11 @@ fprintf('  Brain voxels: %d\n\n', sum(data.bmask(:)));
 
 %% 2. Create Predictors
 
-speed_threshold = 10.0;
-time_lapse_treshold = 1000;
+speed_threshold = 2;   % 2 cm/s is used in paper
+time_lapse_treshold = 200;   % 200ms is used in paper
 
 fprintf('Creating predictors...\n');
-[stim, wheel, stim_stationary] = create_predictors(data, speed_threshold, time_lapse_treshold);
+[stim, wheel, stim_stationary] = create_predictors(data, speed_threshold, time_lapse_treshold, true);
 
 % Visualize stationary trial selection (set to true to see plot)
 plot_stationary_trials(data, stim, wheel, stim_stationary, speed_threshold, true);
@@ -48,18 +48,33 @@ all_results = struct();
 fprintf('M1: Stimuli while stationary\n');
 M1_predictors = stim_stationary;
 M1_labels = {'stim_stationary'};
-glm_estimate = glm('M1', Y, M1_predictors, M1_labels);
-all_results.M1 = remap_glm_results(glm_estimate, data.bmask);
-all_results.M1.X = [M1_predictors, ones(size(M1_predictors,1),1)];  % Store design matrix
 
-% M1 With PC1 removal
-glm_estimate = glm('M1_PC1_removed', Y_PC1_removed, M1_predictors, M1_labels);
-all_results.M1_PC1_removed = remap_glm_results(glm_estimate, data.bmask);
-all_results.M1_PC1_removed.X = [M1_predictors, ones(size(M1_predictors,1),1)];
+% Check if there are stationary trials, otherwise skip M1
+has_stationary_trials = sum(stim_stationary) > 0;
 
+if has_stationary_trials;
 
-% M1 simple correlation
-all_results.M1_corr = simple_corr(stim_stationary, Y, data.bmask);
+    fprintf('  Running M1 estimation with %d stationary trials\n', sum(stim_stationary));
+    glm_estimate = glm('M1', Y, M1_predictors, M1_labels);
+    all_results.M1 = remap_glm_results(glm_estimate, data.bmask);
+    all_results.M1.X = [M1_predictors, ones(size(M1_predictors,1),1)];  % Store design matrix
+    
+    % M1 With PC1 removal
+    glm_estimate = glm('M1_PC1_removed', Y_PC1_removed, M1_predictors, M1_labels);
+    all_results.M1_PC1_removed = remap_glm_results(glm_estimate, data.bmask);
+    all_results.M1_PC1_removed.X = [M1_predictors, ones(size(M1_predictors,1),1)];
+    
+    
+    % M1 simple correlation
+    all_results.M1_corr = simple_corr(stim_stationary, Y, data.bmask);
+
+else
+    warning('M1: No stationary trials found! M1 estimation skipped.');
+    all_results.M1 = struct('skipped', true, 'reason', 'no_stationary_trials');
+    all_results.M1_PC1_removed = struct('skipped', true, 'reason', 'no_stationary_trials');
+    all_results.M1_corr = struct('skipped', true, 'reason', 'no_stationary_trials');
+
+end
 
 
 
@@ -103,3 +118,13 @@ view_glm_results(all_results, data, 'M1')
 view_glm_results(all_results, data, 'M2')
 view_glm_results(all_results, data, 'M3')
 view_glm_results(all_results, data, 'M3_PC1_removed')
+
+%% Save Results back to prepPDI.mat
+fprintf('\nSaving results to prepPDI.mat...\n');
+data.glm_results = all_results;
+
+% Save back to the same file (overwrites original)
+save('prepPDI.mat', 'data', '-v7.3');
+
+fprintf('Results saved successfully!\n');
+fprintf('  You can now load prepPDI.mat and access: data.glm_results\n');

@@ -1,9 +1,9 @@
 # Active Context: Current Work Focus
 
 ## Current Session Status
-**Date**: December 9, 2025
-**Phase**: Preprocessing Pipeline - COMPLETE ✅
-**Mode**: Production-Ready
+**Date**: March 20, 2026
+**Phase**: Documentation System - COMPLETE ✅
+**Mode**: Production-Ready with Three-Tiered Documentation
 
 ## Major Accomplishments
 
@@ -31,10 +31,36 @@ Created 7 helper functions in `src/`:
 - `fillmissingTime.m`: Temporal interpolation of NaN values
 - `parsave.m`: Parallel-safe save wrapper
 
-### 3. Comprehensive Documentation ✅
-- **FUNC_PREPROCESSING_TECH_DOCUMENT.md**: ~50-page technical documentation covering all 10 steps in depth
-- **README_FUNC_PREPROCESSING.md**: Complete user guide with usage examples, troubleshooting, and Mermaid pipeline diagram
-- **Inline comments**: Detailed explanations throughout code
+### 3. Three-Tiered Documentation System ✅
+Created complete documentation hierarchy with cross-links:
+
+**Level 1: User Guide (README_FUNC_PREPROCESSING.md)**
+- Quick start and usage examples
+- Troubleshooting guide
+- Directory structure overview
+- Mermaid pipeline diagram
+- **Links to**: Walkthrough and technical docs
+
+**Level 2: Code Walkthrough (docs/README_preprocessing_walkthrough.md)** [NEW]
+- Step-by-step explanation of each processing section
+- Code snippets with annotations
+- Processing flow diagrams
+- Dependencies for each step
+- **Links to**: Technical documentation for deeper details
+
+**Level 3: Technical Documentation (docs/FUNC_PREPROCESSING_TECH_DOCUMENT.md)**
+- ~100-page complete implementation reference
+- Detailed algorithms and mathematical formulas
+- Design rationale for each decision
+- Parameter tuning guidelines
+- **Links to**: User guide and walkthrough for navigation
+
+**Documentation Features**:
+- ✅ Progressive disclosure (start simple, drill down as needed)
+- ✅ Cross-linking (one-way: top → middle → deep)
+- ✅ Consistent structure across all levels
+- ✅ Emoji indicators for quick navigation (📖 📝 🔧)
+- ✅ Based on reconstruction pipeline template
 
 ### 4. Key Improvements Over Original
 - ❌ Removed `isub` indexing (no subject loops)
@@ -46,6 +72,19 @@ Created 7 helper functions in `src/`:
 - ✅ Self-documenting (all parameters saved in output)
 
 ## Current Work Focus: COMPLETED
+
+### Latest Accomplishment (March 20, 2026)
+**Documentation System Finalized**
+
+Removed redundant files and established clear documentation hierarchy:
+- ❌ Deleted `align_timing_to_frames.m` - not used in production workflow
+- ❌ Deleted `README_TIMING_ALIGNMENT.md` - functionality in analysis folder
+- ❌ Deleted `example_align_timing.m` - redundant demo file
+- ✅ Created `docs/README_preprocessing_walkthrough.md` - middle documentation layer
+- ✅ Added cross-links to all three documentation files
+- ✅ Clarified timing alignment happens in `04_Analysis/src/create_predictors.m`
+
+**Rationale**: The `align_timing_to_frames.m` function duplicated functionality already implemented in the analysis pipeline's `create_predictors()` function, which handles all timing alignment plus additional features (unit conversion, stationary trial selection). Keeping both created confusion about which to use.
 
 ## Active Decisions & Considerations
 
@@ -136,13 +175,15 @@ Helper functions in `src/` are critical but analysis shows they're simple focuse
 
 ## What's Working Well
 - Clear sequential pipeline structure
-- Comprehensive preprocessing steps
-- Helper function modularity
+- Comprehensive preprocessing steps (all 10 steps implemented)
+- Helper function modularity (7 focused utilities)
 - Progress indication for long operations
 - QC visualization capability
+- **Three-tiered documentation system** (new)
+- Clean separation: preprocessing vs analysis timing work
 
 ## Current Blockers
-None - awaiting user direction after memory bank review.
+None - preprocessing pipeline and documentation are production-ready.
 
 ## Notes for Future Sessions
 After memory reset, the refactoring task involves:

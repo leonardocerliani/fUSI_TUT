@@ -1,9 +1,36 @@
 # fUSI Functional Data Preprocessing Pipeline
 
+
+
+# TODO
+
+right now the source func and anat in data_analysis are still hard coded at the beginning of the script. We need to change that harmonizing with the other scripts
+
+
+
+
+
+
+
 ## Overview
+
 Complete preprocessing pipeline for functional ultrasound imaging (fUSI) data. Converts raw Power Doppler Imaging (PDI) data into analysis-ready format through brain masking, motion correction, outlier rejection, signal normalization, temporal filtering, and spatial smoothing.
 
 **Main Script**: `do_preprocessing.m`
+
+---
+
+## 📚 Documentation Levels
+
+This preprocessing pipeline has three levels of documentation to suit different needs:
+
+1. **[This README](README_FUNC_PREPROCESSING.md)** - User guide with quick start, usage examples, and troubleshooting
+2. **[Code Walkthrough](docs/README_preprocessing_walkthrough.md)** - Step-by-step explanation of what each section does
+3. **[Technical Documentation](docs/FUNC_PREPROCESSING_TECH_DOCUMENT.md)** - In-depth implementation details and algorithms
+
+💡 **Start here**, then dive deeper into the walkthrough or technical docs as needed!
+
+---
 
 ## Key Features
 - **Flexible input**: Interactive path selection or direct arguments
@@ -279,7 +306,9 @@ The pipeline implements 10 major preprocessing steps:
 9. **Spatial Smoothing**: Gaussian filter (σ=1 pixel, FWHM=2.355 pixels)
 10. **Save Preprocessed Data**: Output as prepPDI.mat with all metadata
 
-**For detailed technical documentation**, see `FUNC_PREPROCESSING_TECH_DOCUMENT.md` (~50 pages covering every step in depth).
+**For more detailed information:**
+- 📖 **[Code Walkthrough](docs/README_preprocessing_walkthrough.md)** - Step-by-step explanation with code snippets
+- 🔧 **[Technical Documentation](docs/FUNC_PREPROCESSING_TECH_DOCUMENT.md)** - Complete technical reference (~50 pages)
 
 ## Quality Control Visualizations
 
@@ -474,10 +503,11 @@ Output files are typically 2-3× larger than input due to resampling to 5 Hz. En
 
 ## Support and Documentation
 
-### Quick Reference
-- **This file**: Overview and usage examples
-- **FUNC_PREPROCESSING_TECH_DOCUMENT.md**: Detailed technical documentation
-- **Inline code comments**: Explain each processing step
+### Documentation Structure
+- **[This README](README_FUNC_PREPROCESSING.md)**: Overview, quick start, and usage examples
+- **[Code Walkthrough](docs/README_preprocessing_walkthrough.md)**: Step-by-step code explanation
+- **[Technical Documentation](docs/FUNC_PREPROCESSING_TECH_DOCUMENT.md)**: Complete implementation details
+- **Inline code comments**: Explain each processing step in the code
 - **Memory bank** (memory-bank/): Project context and design decisions
 
 ### For Issues or Questions

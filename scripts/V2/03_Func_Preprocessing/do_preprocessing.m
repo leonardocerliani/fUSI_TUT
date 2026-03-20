@@ -55,7 +55,7 @@ end
 %% ONLY FOR TESTING!!!
 
 anatPath='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/data/Data_analysis/ses-231215/run-113409-anat';
-funcPath='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/data/Data_analysis/ses-231215/run-115047-func';
+funcPath='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/data/Data_analysis/ses-231215/run-115047-func-visual';
 atlasPath='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/scripts/V2/allen_brain_atlas';
 
 

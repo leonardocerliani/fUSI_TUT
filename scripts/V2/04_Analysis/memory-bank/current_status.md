@@ -1,8 +1,8 @@
 # Current Status - GLM Analysis Pipeline
 
-**Last Updated**: 2026-02-16 10:49 AM
+**Last Updated**: 2026-03-20 11:48 AM
 
-## ✅ Version 3.0 Complete - Full Statistics & Interactive Visualization
+## ✅ Version 3.1 Complete - Enhanced Visualization & Error Handling
 
 ### Major Accomplishments Today (Feb 13)
 
@@ -285,6 +285,47 @@ All known issues resolved!
 - **Results export**: Export to NIfTI or other formats
 
 ## Session Summary
+
+### Mar 20, 2026 - Enhanced Viewer & Error Handling (v3.1)
+
+**Improvements to visualization and robustness:**
+
+1. **Skip Detection for Missing Data** ✅
+   - Added check in `view_glm_results()` to detect if model was skipped
+   - When no stationary trials exist, M1/M1_PC1_removed/M1_corr have `{skipped: true, reason: 'no_stationary_trials'}`
+   - Viewer now displays informative message box and returns gracefully
+   - Prevents "Unrecognized field name 'predictor_labels'" error
+   
+2. **All eta² Maps Now Clickable** ✅
+   - Previously only first (top-left) map was clickable
+   - Now ALL eta² maps are interactive - click any of them
+   - Uses `gca` (get current axes) to detect which map was clicked
+   - Synchronized markers across all maps at same (x,y) location
+   
+3. **Synchronized Marker System**:
+   ```matlab
+   % Store all axes and markers
+   viewer_data.eta2_axes = gobjects(n_predictors, 1);
+   viewer_data.markers = gobjects(n_predictors, 1);
+   
+   % Update all markers when any map is clicked
+   for i = 1:length(viewer_data.eta2_axes)
+       axes(viewer_data.eta2_axes(i))
+       viewer_data.markers(i) = plot(x, y, 'c.', 'MarkerSize', 30);
+   end
+   ```
+
+4. **Updated UI**:
+   - Title changed from "Click first eta² map..." to "Click any eta² map..."
+   - Cyan markers appear on all maps simultaneously
+   - Consistent user experience regardless of which map is clicked
+
+5. **Code Quality**:
+   - Created backup file `view_glm_results_MRGNCY.m` for safety
+   - All changes tested and working
+   - No breaking changes to existing functionality
+
+**Result**: More robust and user-friendly visualization system!
 
 ### Feb 16, 2026 - Code Refactoring & Simplification
 

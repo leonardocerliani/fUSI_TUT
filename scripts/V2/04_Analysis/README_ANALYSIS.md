@@ -3,6 +3,22 @@
 **Version 3.0 - Full Statistics & Interactive Visualization**  
 **Last Updated**: 2026-02-13
 
+
+
+# TODO
+
+- right now the `prepPDI` is loaded from the `$PWD`. We need to change this to load from the `funcpath` 
+
+- to do this, we need to transform the script into a function
+
+
+
+
+
+
+
+
+
 ## Overview
 
 A complete GLM analysis pipeline for fUSI data with comprehensive statistics, interactive visualization, and paper-accurate methods. Supports multiple models with automatic computation of effect sizes, significance tests, and visual exploration.
