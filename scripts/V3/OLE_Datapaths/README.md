@@ -1,4 +1,9 @@
-# Datapath.m to csv file
+# Moving to storm
+Until now, we carried out the refactoring on some sample data locally. Now it's time to connect the refactored code to the data on Storm
+
+
+
+## Datapath.m to csv file
 
 The information about the experiments was previously encoded in the file `Datapath.m`, as well as the correspondence between each functional and anatomical session.
 
@@ -57,8 +62,18 @@ echo "Copied $SRC_DIR -> $DEST_DIR"
 ```
 
 
-Finally, there is a new file `datapath_NEW`
+Finally, there is a new file `datapath_NEW.csv` with the new location in `/data03/fUSIMethodsPaper_SAMPLE`
 
+
+Now I need to find a way that allows me to load one anatomical/functional dataset just inputting the run number (which is unique) into the various scripts
+
+```
+do_reconstruct_functional <-- Data_collection functional run
+
+do_preprocessing <-- anatPath and functPath run from Data_analysis
+
+analysis <-- currently accepts the prepPDI, still needs to be made into a function
+```
 
 
 

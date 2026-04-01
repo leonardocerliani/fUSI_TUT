@@ -1,19 +1,37 @@
-% DO_ANALYSIS_METHODS_PAPER - Main script for fUSI GLM analysis
+function do_analysis_methods_paper(func_analysis_path)
+% DO_ANALYSIS_METHODS_PAPER - Main function for fUSI GLM analysis
 %
-% Simplified, clean implementation for GLM analysis on fUSI data
+% Usage:
+%   do_analysis_methods_paper(func_analysis_path)
+%
+% Input:
+%   func_analysis_path - Path to functional analysis directory containing prepPDI.mat
+%
+% Description:
+%   Simplified, clean implementation for GLM analysis on fUSI data.
+%   Performs GLM analysis on preprocessed fUSI data with three models:
+%   M1: Stimuli while stationary
+%   M2: All stimuli
+%   M3: All stimuli + running + interaction
 %
 % Author: fUSI methods paper
 % Date: 2026-02-12
 
 %% Setup
-clear; clc; close all;
-addpath('src');
+srcPath = fullfile(fileparts(mfilename('fullpath')), 'src');
+addpath(srcPath);
 
 fprintf('=== fUSI GLM Analysis ===\n\n');
 
 %% 1. Load Data
 fprintf('Loading data...\n');
-load('prepPDI.mat');
+prepPDI_file = fullfile(func_analysis_path, 'prepPDI.mat');
+
+if ~isfile(prepPDI_file)
+    error('prepPDI.mat not found in: %s', func_analysis_path);
+end
+
+load(prepPDI_file);
 
 fprintf('  Data: [%d x %d x %d]\n', size(data.PDI, 1), size(data.PDI, 2), size(data.PDI, 3));
 fprintf('  Brain voxels: %d\n\n', sum(data.bmask(:)));
@@ -124,7 +142,10 @@ fprintf('\nSaving results to prepPDI.mat...\n');
 data.glm_results = all_results;
 
 % Save back to the same file (overwrites original)
-save('prepPDI.mat', 'data', '-v7.3');
+save(prepPDI_file, 'data', '-v7.3');
 
 fprintf('Results saved successfully!\n');
+fprintf('  Results saved to: %s\n', prepPDI_file);
 fprintf('  You can now load prepPDI.mat and access: data.glm_results\n');
+
+end

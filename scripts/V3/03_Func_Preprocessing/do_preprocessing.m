@@ -1,8 +1,8 @@
-function do_preprocessing(anatPath, funcPath, atlasPath)
+function do_preprocessing(anat_analysis_path, func_analysis_path, atlasPath)
 % DO_PREPROCESSING - Preprocess functional ultrasound imaging (fUSI) data
 %
 % Syntax:
-%   do_preprocessing(anatPath, funcPath, atlasPath)
+%   do_preprocessing(anat_analysis_path, func_analysis_path, atlasPath)
 %   do_preprocessing()  % Interactive mode - prompts for paths
 %
 % Description:
@@ -11,13 +11,14 @@ function do_preprocessing(anatPath, funcPath, atlasPath)
 %   filtering, and spatial smoothing.
 %
 % Inputs:
-%   anatPath  - (optional) Path to anatomical data directory containing 
-%               anatomic.mat and Transformation.mat
-%               Example: 'sample_data/Data_analysis/run-113409-anat'
-%   funcPath  - (optional) Path to functional data directory containing PDI.mat
-%               Example: 'sample_data/Data_analysis/run-115047-func'
-%   atlasPath - (optional) Path to directory containing allen_brain_atlas.mat
-%               Example: '/path/to/atlas/directory'
+%   anat_analysis_path - (optional) Path to anatomical Data_analysis directory
+%                        containing anatomic.mat and Transformation.mat
+%                        Example: 'Data_analysis/ses-231215/run-113409-anat'
+%   func_analysis_path - (optional) Path to functional Data_analysis directory
+%                        containing PDI.mat (output from reconstruction)
+%                        Example: 'Data_analysis/ses-231215/run-115047-func'
+%   atlasPath          - (optional) Path to directory containing allen_brain_atlas.mat
+%                        Example: '/path/to/atlas/directory'
 %
 %   If any input is not provided, a UI dialog will prompt for selection.
 %
@@ -26,8 +27,8 @@ function do_preprocessing(anatPath, funcPath, atlasPath)
 %
 % Example:
 %   % Provide all paths directly
-%   do_preprocessing('sample_data/Data_analysis/run-113409-anat', ...
-%                    'sample_data/Data_analysis/run-115047-func', ...
+%   do_preprocessing('Data_analysis/ses-231215/run-113409-anat', ...
+%                    'Data_analysis/ses-231215/run-115047-func', ...
 %                    '/path/to/atlas')
 %
 %   % Interactive mode
@@ -42,21 +43,21 @@ addpath('src');
 
 % If arguments not provided, set to empty (load_anat_and_func will prompt)
 if nargin < 1
-    anatPath = [];
+    anat_analysis_path = [];
 end
 if nargin < 2
-    funcPath = [];
+    func_analysis_path = [];
 end
 if nargin < 3
     atlasPath = [];
 end
 
 
-%% ONLY FOR TESTING!!!
+%% ONLY FOR TESTING!!! - COMMENT OUT WHEN USING WITH LAUNCHER
 
-anatPath='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/data/Data_analysis/ses-231215/run-113409-anat';
-funcPath='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/data/Data_analysis/ses-231215/run-115047-func-visual';
-atlasPath='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/scripts/V2/allen_brain_atlas';
+% anat_analysis_path='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/data/Data_analysis/ses-231215/run-113409-anat';
+% func_analysis_path='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/data/Data_analysis/ses-231215/run-115047-func-visual';
+% atlasPath='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/scripts/V2/allen_brain_atlas';
 
 
 
@@ -68,7 +69,7 @@ atlasPath='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/scripts/V2/allen_brain_atlas';
 fprintf('=== Loading Data ===\n');
 
 % Load anatomical, functional, and atlas data
-[PDI, anatomic, Transf, atlas] = load_anat_and_func(anatPath, funcPath, atlasPath);
+[PDI, anatomic, Transf, atlas] = load_anat_and_func(anat_analysis_path, func_analysis_path, atlasPath);
 
 fprintf('=== Data Loading Complete ===\n\n');
 

@@ -205,12 +205,13 @@ cd('/path/to/02_Functional_Reconstruction')
 PDI = do_reconstruct_functional();
 
 % Or provide path directly
-datapath = '/path/to/Data_collection/run-115047-func';
-PDI = do_reconstruct_functional(datapath);
+func_collection_path = '/path/to/Data_collection/ses-231215/run-115047-func';
+PDI = do_reconstruct_functional(func_collection_path);
 
-% Or specify both data and output paths
-savepath = '/path/to/Data_analysis/run-115047-func';
-PDI = do_reconstruct_functional(datapath, savepath);
+% Or specify both data collection and analysis paths
+func_collection_path = '/path/to/Data_collection/ses-231215/run-115047-func';
+func_analysis_path = '/path/to/Data_analysis/ses-231215/run-115047-func';
+PDI = do_reconstruct_functional(func_collection_path, func_analysis_path);
 ```
 
 **Try with sample data:**

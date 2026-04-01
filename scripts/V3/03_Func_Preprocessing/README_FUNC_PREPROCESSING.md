@@ -53,13 +53,13 @@ cd('/path/to/03_Func_Preprocessing')
 do_preprocessing()
 
 % Provide paths directly
-anatPath = 'sample_data/Data_analysis/run-113409-anat';
-funcPath = 'sample_data/Data_analysis/run-115047-func';
+anat_analysis_path = 'Data_analysis/ses-231215/run-113409-anat';
+func_analysis_path = 'Data_analysis/ses-231215/run-115047-func';
 atlasPath = '/path/to/atlas';  % Directory containing allen_brain_atlas.mat
-do_preprocessing(anatPath, funcPath, atlasPath)
+do_preprocessing(anat_analysis_path, func_analysis_path, atlasPath)
 
 % Mix modes - provide some paths, prompt for others
-do_preprocessing(anatPath, funcPath)  % Will prompt for atlas
+do_preprocessing(anat_analysis_path, func_analysis_path)  % Will prompt for atlas
 ```
 
 ### 2. Try With Sample Data
@@ -395,38 +395,38 @@ The pipeline implements 10 major preprocessing steps:
 ### Batch Processing (Sequential)
 ```matlab
 % Define subjects
-anatPaths = {
-    'Data_analysis/sub-01/run-anat'
-    'Data_analysis/sub-02/run-anat'
-    'Data_analysis/sub-03/run-anat'
+anat_analysis_paths = {
+    'Data_analysis/ses-231215/run-113409-anat'
+    'Data_analysis/ses-231218/run-144557-anat'
+    'Data_analysis/ses-240104/run-123823-anat'
 };
 
-funcPaths = {
-    'Data_analysis/sub-01/run-func'
-    'Data_analysis/sub-02/run-func'
-    'Data_analysis/sub-03/run-func'
+func_analysis_paths = {
+    'Data_analysis/ses-231215/run-115047-func'
+    'Data_analysis/ses-231218/run-152539-func'
+    'Data_analysis/ses-240104/run-125448-func'
 };
 
 atlasPath = '/path/to/atlas';
 
-% Process each subject
-for i = 1:length(anatPaths)
-    fprintf('\n=== Processing Subject %d/%d ===\n', i, length(anatPaths));
-    do_preprocessing(anatPaths{i}, funcPaths{i}, atlasPath);
-    fprintf('\n=== Subject %d Complete ===\n', i);
+% Process each run
+for i = 1:length(anat_analysis_paths)
+    fprintf('\n=== Processing Run %d/%d ===\n', i, length(anat_analysis_paths));
+    do_preprocessing(anat_analysis_paths{i}, func_analysis_paths{i}, atlasPath);
+    fprintf('\n=== Run %d Complete ===\n', i);
 end
 ```
 
 ### Parallel Processing
 ```matlab
-% Define subjects (as above)
-anatPaths = { ... };
-funcPaths = { ... };
+% Define runs (as above)
+anat_analysis_paths = { ... };
+func_analysis_paths = { ... };
 atlasPath = '/path/to/atlas';
 
 % Process in parallel
-parfor i = 1:length(anatPaths)
-    do_preprocessing(anatPaths{i}, funcPaths{i}, atlasPath);
+parfor i = 1:length(anat_analysis_paths)
+    do_preprocessing(anat_analysis_paths{i}, func_analysis_paths{i}, atlasPath);
 end
 ```
 
