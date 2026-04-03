@@ -17,67 +17,67 @@ Total rows   : 206
 [S1] Functional path subject ≠ Anatomical path subject
 ----------------------------------------------------------------------
 
-  Row  96  |  condition=SOcFOS  project=EmotionalContagion
+  Row  96  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func subject : sub-CFOS03
            anat subject : sub-Dyad01
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad01/ses-230329/run-122938
 
-  Row  97  |  condition=SOcFOS  project=EmotionalContagion
+  Row  97  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func subject : sub-CFOS04
            anat subject : sub-Dyad02
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS04/ses-240315/run-123308/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad02/ses-230331/run-112016
 
-  Row  98  |  condition=SOcFOS  project=EmotionalContagion
+  Row  98  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func subject : sub-CFOS05
            anat subject : sub-Dyad03
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS05/ses-240412/run-114408/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad03/ses-230330/run-110153
 
-  Row  99  |  condition=SOcFOS  project=EmotionalContagion
+  Row  99  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func subject : sub-CFOS03
            anat subject : sub-Dyad05
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad05/ses-230615/run-123552
 
-  Row 100  |  condition=SOcFOS  project=EmotionalContagion
+  Row 100  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func subject : sub-CFOS03
            anat subject : sub-Dyad07
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad07/ses-230623/run-111330
 
-  Row 101  |  condition=SOcFOS  project=EmotionalContagion
+  Row 101  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func subject : sub-CFOS03
            anat subject : sub-Dyad09
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad09/ses-240216/run-103522
 
-  Row 102  |  condition=SOcFOS  project=EmotionalContagion
+  Row 102  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func subject : sub-CFOS03
            anat subject : sub-Dyad10
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad10/ses-240308/run-095114
 
-  Row 103  |  condition=SOcFOS  project=EmotionalContagion
+  Row 103  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func subject : sub-CFOS03
            anat subject : sub-Dyad11
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad11/ses-240301/run-092146
 
-  Row 104  |  condition=SOcFOS  project=EmotionalContagion
+  Row 104  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func subject : sub-CFOS03
            anat subject : sub-Dyad12
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad12/ses-240524/run-104237
 
-  Row 105  |  condition=SOcFOS  project=EmotionalContagion
+  Row 105  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func subject : sub-CFOS03
            anat subject : sub-Dyad13
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad13/ses-240607/run-102748
 
-  Row 106  |  condition=SOcFOS  project=EmotionalContagion
+  Row 106  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func subject : sub-CFOS03
            anat subject : sub-Dyad14
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
@@ -87,67 +87,67 @@ Total rows   : 206
 [T1] Functional path session ≠ Anatomical path session
 ----------------------------------------------------------------------
 
-  Row  96  |  condition=SOcFOS  project=EmotionalContagion
+  Row  96  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func session : ses-240315
            anat session : ses-230329
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad01/ses-230329/run-122938
 
-  Row  97  |  condition=SOcFOS  project=EmotionalContagion
+  Row  97  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func session : ses-240315
            anat session : ses-230331
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS04/ses-240315/run-123308/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad02/ses-230331/run-112016
 
-  Row  98  |  condition=SOcFOS  project=EmotionalContagion
+  Row  98  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func session : ses-240412
            anat session : ses-230330
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS05/ses-240412/run-114408/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad03/ses-230330/run-110153
 
-  Row  99  |  condition=SOcFOS  project=EmotionalContagion
+  Row  99  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func session : ses-240315
            anat session : ses-230615
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad05/ses-230615/run-123552
 
-  Row 100  |  condition=SOcFOS  project=EmotionalContagion
+  Row 100  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func session : ses-240315
            anat session : ses-230623
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad07/ses-230623/run-111330
 
-  Row 101  |  condition=SOcFOS  project=EmotionalContagion
+  Row 101  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func session : ses-240315
            anat session : ses-240216
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad09/ses-240216/run-103522
 
-  Row 102  |  condition=SOcFOS  project=EmotionalContagion
+  Row 102  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func session : ses-240315
            anat session : ses-240308
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad10/ses-240308/run-095114
 
-  Row 103  |  condition=SOcFOS  project=EmotionalContagion
+  Row 103  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func session : ses-240315
            anat session : ses-240301
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad11/ses-240301/run-092146
 
-  Row 104  |  condition=SOcFOS  project=EmotionalContagion
+  Row 104  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func session : ses-240315
            anat session : ses-240524
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad12/ses-240524/run-104237
 
-  Row 105  |  condition=SOcFOS  project=EmotionalContagion
+  Row 105  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func session : ses-240315
            anat session : ses-240607
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
            anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad13/ses-240607/run-102748
 
-  Row 106  |  condition=SOcFOS  project=EmotionalContagion
+  Row 106  |  condition=SOcFOS  project=fUSIEmotionalContagion
            func session : ses-240315
            anat session : ses-240614
            functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/

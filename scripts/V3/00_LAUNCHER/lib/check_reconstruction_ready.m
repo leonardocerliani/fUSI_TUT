@@ -50,12 +50,12 @@ end
 
 %% Required Files Checklist
 
-% 1. experiment_config.json (REQUIRED)
+% 1. experiment_config.json (OPTIONAL - default values will be used if absent)
 configFile = fullfile(dataDir, 'experiment_config.json');
 if isfile(configFile)
     status.found_files{end+1} = 'experiment_config.json';
 else
-    status.missing_files{end+1} = 'experiment_config.json';
+    status.found_files{end+1} = 'experiment_config.json (not found - default values will be used)';
 end
 
 % 2. TTL*.csv (REQUIRED - at least one)

@@ -1,4 +1,6 @@
 {
+  "location": "Copy this file into your run-XXXXXX Data_collection folder, rename it experiment_config.json, and edit the values below",
+
   "experiment_id": "run-XXXXXX-func",
   "date": "YYYY-MM-DD",
   "description": "Brief description of your experiment (e.g., Visual stimulation, Shock tail, etc.)",

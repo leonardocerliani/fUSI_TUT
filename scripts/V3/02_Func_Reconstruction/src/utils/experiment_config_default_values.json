@@ -1,0 +1,12 @@
+{
+  "experiment_id": "run-XXXXXX",
+  "date": "2023-12-15",
+  "description": "Default experiment config values",
+  
+  "ttl_channels": {
+    "pdi_frame": 3,
+    "experiment_start": 6,
+    "experiment_start_fallback": 5,
+    "visual": 10
+  }
+}

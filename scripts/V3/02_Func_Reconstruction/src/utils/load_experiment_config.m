@@ -4,40 +4,32 @@ function config = load_experiment_config(datapath)
     %   config = load_experiment_config(datapath)
     %
     %   Looks for experiment_config.json in the data directory.
-    %   If not found, provides helpful error with template example.
+    %   If not found, loads default values from experiment_config_default_values.json
+    %   located in the same folder as this function (src/utils/).
     
     configFile = fullfile(datapath, 'experiment_config.json');
     
     if ~exist(configFile, 'file')
-        % Print helpful error message with template
+        % Locate default values file next to this function
+        defaultConfigFile = fullfile(fileparts(mfilename('fullpath')), 'experiment_config_default_values.json');
+        
         fprintf(2, '\n');
         fprintf(2, '========================================\n');
-        fprintf(2, 'ERROR: Configuration file not found!\n');
-        fprintf(2, '========================================\n\n');
+        fprintf(2, 'WARNING: experiment_config.json not found!\n');
+        fprintf(2, '========================================\n');
         fprintf(2, 'Expected location:\n  %s\n\n', configFile);
-        fprintf(2, 'Please create experiment_config.json with the following format:\n\n');
-        fprintf(2, '{\n');
-        fprintf(2, '  "experiment_id": "run-115047-func",\n');
-        fprintf(2, '  "date": "2023-12-15",\n');
-        fprintf(2, '  "description": "Visual stimulation experiment",\n');
-        fprintf(2, '  \n');
-        fprintf(2, '  "ttl_channels": {\n');
-        fprintf(2, '    "pdi_frame": 3,\n');
-        fprintf(2, '    "experiment_start": 6,\n');
-        fprintf(2, '    "experiment_start_fallback": 5,\n');
-        fprintf(2, '    "visual": 10,\n');
-        fprintf(2, '    "auditory": 11,\n');
-        fprintf(2, '    "shock": [4, 5, 12]\n');
-        fprintf(2, '  }\n');
-        fprintf(2, '}\n\n');
-        fprintf(2, 'Notes:\n');
-        fprintf(2, '  • Keep all channel fields for consistency across experiments\n');
-        fprintf(2, '  • Unused stimulation types are automatically ignored if CSV files are absent\n');
-        fprintf(2, '  • For shock, provide all possible channels [4,5,12] - code selects appropriately\n');
-        fprintf(2, '  • Save as experiment_config.json in the data folder\n\n');
+        fprintf(2, 'Loading default TTL channel values:\n');
+        fprintf(2, '  pdi_frame:                  3\n');
+        fprintf(2, '  experiment_start:           6\n');
+        fprintf(2, '  experiment_start_fallback:  5\n');
+        fprintf(2, '  visual:                    10\n\n');
+        fprintf(2, 'To override, copy experiment_config_template.json from the\n');
+        fprintf(2, 'script root into your Data_collection run folder,\n');
+        fprintf(2, 'rename it experiment_config.json, and edit as needed.\n');
         fprintf(2, '========================================\n\n');
         
-        error('Configuration file missing. Please create experiment_config.json in data directory.');
+        config = parse_config(defaultConfigFile);
+        return;
     end
     
     % Load configuration
