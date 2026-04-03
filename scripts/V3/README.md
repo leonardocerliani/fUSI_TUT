@@ -28,7 +28,7 @@ I still didn't have the time to generate a written version of this overall readm
 
 
 ## Anatomical reconstruction and registration to the Allen atlas
-This is done at experiment time, therefore it is unlikely that it will be needed by any user who will "just" run RPA. However, it is good to know how it works. [Click here or on the picture below to watch the video tut](https://www.youtube.com/watch?v=mwABeCqeyDc)
+This is done at experiment time, therefore it is unlikely that it will be needed by any user who will "just" run RPA. However, it is good to know how it works. [`CMD/Crtl+Click` here or on the picture below to watch the video tut](https://www.youtube.com/watch?v=mwABeCqeyDc)
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=mwABeCqeyDc" target="_blank" rel="noopener noreferrer">
@@ -38,7 +38,7 @@ This is done at experiment time, therefore it is unlikely that it will be needed
 
 
 ## Data management using a csv file for data localization / copying / pipeline launching
-While previously the `Datapath.m` was use to retrieve the location of the data and launch steps of the pipeline, I opted for a csv file, which possibly allows an easier way to inspect the file location. The particular one created here - following the steps in `00_DATA_MANAGEMENT` - also allows to easily copy the data from the source location in `data06` to the location you decide to run the tutorial on. [Click here or on the picture below to watch the video tut](https://www.youtube.com/watch?v=nTfqBgpA7Vs)
+While previously the `Datapath.m` was use to retrieve the location of the data and launch steps of the pipeline, I opted for a csv file, which possibly allows an easier way to inspect the file location. The particular one created here - following the steps in `00_DATA_MANAGEMENT` - also allows to easily copy the data from the source location in `data06` to the location you decide to run the tutorial on. [`CMD/Crtl+Click` here or on the picture below to watch the video tut](https://www.youtube.com/watch?v=nTfqBgpA7Vs)
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=nTfqBgpA7Vs">
@@ -61,7 +61,7 @@ The scripts for each step can be run independently, however I advise to start wi
 - run several steps in sequence
 - re-run a specific step
 
-**IMPORTANTLY, before using the launcher, make sure you have copied the last version of your generated `fUSI_data_location_STORM.csv` from the `00_DATA_MANAGEMENT/03_CP_DATA` to the `00_LAUNCHER` folder**. The current ones in the repo serve just as examples and should be generated from scratch according to your choice of where you want your tutorial to run (I know, it's still quite rough, but I will make it better in the future). [Click here or on the picture below to watch the video tut](https://www.youtube.com/watch?v=XFna2kEZglg)
+**IMPORTANTLY, before using the launcher, make sure you have copied the last version of your generated `fUSI_data_location_STORM.csv` from the `00_DATA_MANAGEMENT/03_CP_DATA` to the `00_LAUNCHER` folder**. The current ones in the repo serve just as examples and should be generated from scratch according to your choice of where you want your tutorial to run (I know, it's still quite rough, but I will make it better in the future). [`CMD/Crtl+Click` here or on the picture below to watch the video tut](https://www.youtube.com/watch?v=XFna2kEZglg)
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=XFna2kEZglg">
