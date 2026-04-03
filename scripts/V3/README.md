@@ -31,7 +31,7 @@ I still didn't have the time to generate a written version of this overall readm
 This is done at experiment time, therefore it is unlikely that it will be needed by any user who will "just" run RPA. However, it is good to know how it works. [Click here or on the picture below to watch the video tut](https://www.youtube.com/watch?v=mwABeCqeyDc)
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=mwABeCqeyDc">
+  <a href="https://www.youtube.com/watch?v=mwABeCqeyDc" target="_blank" rel="noopener noreferrer">
     <img src="assets/anatomical_reconstruction.png" alt="Anatomical reconstruction" width="600">
   </a>
 </p>
