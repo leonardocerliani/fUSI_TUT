@@ -1,0 +1,473 @@
+======================================================================
+Subject ID & Session ID Consistency Check
+======================================================================
+
+CSV file     : original_Datapath_location.csv
+Total rows   : 206
+
+--- subject_id ---
+[S1] func_path subject vs anat_path subject : 11 mismatch(es)
+[S2] path subject_id vs CSV subject_id col  : 0 mismatch(es)
+
+--- session_id ---
+[T1] func_path session vs anat_path session : 64 mismatch(es)
+[T2] path session_id vs CSV session_id col  : 0 mismatch(es)
+
+----------------------------------------------------------------------
+[S1] Functional path subject ≠ Anatomical path subject
+----------------------------------------------------------------------
+
+  Row  96  |  condition=SOcFOS  project=EmotionalContagion
+           func subject : sub-CFOS03
+           anat subject : sub-Dyad01
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad01/ses-230329/run-122938
+
+  Row  97  |  condition=SOcFOS  project=EmotionalContagion
+           func subject : sub-CFOS04
+           anat subject : sub-Dyad02
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS04/ses-240315/run-123308/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad02/ses-230331/run-112016
+
+  Row  98  |  condition=SOcFOS  project=EmotionalContagion
+           func subject : sub-CFOS05
+           anat subject : sub-Dyad03
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS05/ses-240412/run-114408/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad03/ses-230330/run-110153
+
+  Row  99  |  condition=SOcFOS  project=EmotionalContagion
+           func subject : sub-CFOS03
+           anat subject : sub-Dyad05
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad05/ses-230615/run-123552
+
+  Row 100  |  condition=SOcFOS  project=EmotionalContagion
+           func subject : sub-CFOS03
+           anat subject : sub-Dyad07
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad07/ses-230623/run-111330
+
+  Row 101  |  condition=SOcFOS  project=EmotionalContagion
+           func subject : sub-CFOS03
+           anat subject : sub-Dyad09
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad09/ses-240216/run-103522
+
+  Row 102  |  condition=SOcFOS  project=EmotionalContagion
+           func subject : sub-CFOS03
+           anat subject : sub-Dyad10
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad10/ses-240308/run-095114
+
+  Row 103  |  condition=SOcFOS  project=EmotionalContagion
+           func subject : sub-CFOS03
+           anat subject : sub-Dyad11
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad11/ses-240301/run-092146
+
+  Row 104  |  condition=SOcFOS  project=EmotionalContagion
+           func subject : sub-CFOS03
+           anat subject : sub-Dyad12
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad12/ses-240524/run-104237
+
+  Row 105  |  condition=SOcFOS  project=EmotionalContagion
+           func subject : sub-CFOS03
+           anat subject : sub-Dyad13
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad13/ses-240607/run-102748
+
+  Row 106  |  condition=SOcFOS  project=EmotionalContagion
+           func subject : sub-CFOS03
+           anat subject : sub-Dyad14
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad14/ses-240614/run-102319
+
+----------------------------------------------------------------------
+[T1] Functional path session ≠ Anatomical path session
+----------------------------------------------------------------------
+
+  Row  96  |  condition=SOcFOS  project=EmotionalContagion
+           func session : ses-240315
+           anat session : ses-230329
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad01/ses-230329/run-122938
+
+  Row  97  |  condition=SOcFOS  project=EmotionalContagion
+           func session : ses-240315
+           anat session : ses-230331
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS04/ses-240315/run-123308/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad02/ses-230331/run-112016
+
+  Row  98  |  condition=SOcFOS  project=EmotionalContagion
+           func session : ses-240412
+           anat session : ses-230330
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS05/ses-240412/run-114408/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad03/ses-230330/run-110153
+
+  Row  99  |  condition=SOcFOS  project=EmotionalContagion
+           func session : ses-240315
+           anat session : ses-230615
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad05/ses-230615/run-123552
+
+  Row 100  |  condition=SOcFOS  project=EmotionalContagion
+           func session : ses-240315
+           anat session : ses-230623
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad07/ses-230623/run-111330
+
+  Row 101  |  condition=SOcFOS  project=EmotionalContagion
+           func session : ses-240315
+           anat session : ses-240216
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad09/ses-240216/run-103522
+
+  Row 102  |  condition=SOcFOS  project=EmotionalContagion
+           func session : ses-240315
+           anat session : ses-240308
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad10/ses-240308/run-095114
+
+  Row 103  |  condition=SOcFOS  project=EmotionalContagion
+           func session : ses-240315
+           anat session : ses-240301
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad11/ses-240301/run-092146
+
+  Row 104  |  condition=SOcFOS  project=EmotionalContagion
+           func session : ses-240315
+           anat session : ses-240524
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad12/ses-240524/run-104237
+
+  Row 105  |  condition=SOcFOS  project=EmotionalContagion
+           func session : ses-240315
+           anat session : ses-240607
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad13/ses-240607/run-102748
+
+  Row 106  |  condition=SOcFOS  project=EmotionalContagion
+           func session : ses-240315
+           anat session : ses-240614
+           functional_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-CFOS03/ses-240315/run-100823/
+           anatomical_path : /data06/fUSIEmotionalContagion/Data_analysis/sub-Dyad14/ses-240614/run-102319
+
+  Row 150  |  condition=USStimulation  project=USS
+           func session : ses-240917
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal1/ses-240917/run-122601/
+           anatomical_path : /data03/USS/Data_analysis/animal1/ses-240916/run-163205/
+
+  Row 151  |  condition=USStimulation  project=USS
+           func session : ses-240917
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal1/ses-240917/run-125149/
+           anatomical_path : /data03/USS/Data_analysis/animal1/ses-240916/run-163205/
+
+  Row 152  |  condition=USStimulation  project=USS
+           func session : ses-240917
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal1/ses-240917/run-131126/
+           anatomical_path : /data03/USS/Data_analysis/animal1/ses-240916/run-163205/
+
+  Row 153  |  condition=USStimulation  project=USS
+           func session : ses-240917
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal2/ses-240917/run-160022/
+           anatomical_path : /data03/USS/Data_analysis/animal2/ses-240916/run-141934/
+
+  Row 154  |  condition=USStimulation  project=USS
+           func session : ses-240917
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal2/ses-240917/run-163257/
+           anatomical_path : /data03/USS/Data_analysis/animal2/ses-240916/run-141934/
+
+  Row 155  |  condition=USStimulation  project=USS
+           func session : ses-240917
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal2/ses-240917/run-170411/
+           anatomical_path : /data03/USS/Data_analysis/animal2/ses-240916/run-141934/
+
+  Row 156  |  condition=USStimulation  project=USS
+           func session : ses-240918
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal1/ses-240918/run-165905/
+           anatomical_path : /data03/USS/Data_analysis/animal1/ses-240916/run-163205/
+
+  Row 157  |  condition=USStimulation  project=USS
+           func session : ses-240918
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal1/ses-240918/run-172355/
+           anatomical_path : /data03/USS/Data_analysis/animal1/ses-240916/run-163205/
+
+  Row 158  |  condition=USStimulation  project=USS
+           func session : ses-240918
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal1/ses-240918/run-174256/
+           anatomical_path : /data03/USS/Data_analysis/animal1/ses-240916/run-163205/
+
+  Row 159  |  condition=USStimulation  project=USS
+           func session : ses-240918
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal2/ses-240918/run-123230/
+           anatomical_path : /data03/USS/Data_analysis/animal2/ses-240916/run-141934/
+
+  Row 160  |  condition=USStimulation  project=USS
+           func session : ses-240918
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal2/ses-240918/run-125830/
+           anatomical_path : /data03/USS/Data_analysis/animal2/ses-240916/run-141934/
+
+  Row 161  |  condition=USStimulation  project=USS
+           func session : ses-240918
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal2/ses-240918/run-131734/
+           anatomical_path : /data03/USS/Data_analysis/animal2/ses-240916/run-141934/
+
+  Row 162  |  condition=USStimulation  project=USS
+           func session : ses-240920
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal1/ses-240920/run-123223/
+           anatomical_path : /data03/USS/Data_analysis/animal1/ses-240916/run-163205/
+
+  Row 163  |  condition=USStimulation  project=USS
+           func session : ses-240920
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal1/ses-240920/run-130147/
+           anatomical_path : /data03/USS/Data_analysis/animal1/ses-240916/run-163205/
+
+  Row 164  |  condition=USStimulation  project=USS
+           func session : ses-240920
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal1/ses-240920/run-132200/
+           anatomical_path : /data03/USS/Data_analysis/animal1/ses-240916/run-163205/
+
+  Row 165  |  condition=USStimulation  project=USS
+           func session : ses-240920
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal2/ses-240920/run-164354/
+           anatomical_path : /data03/USS/Data_analysis/animal2/ses-240916/run-141934/
+
+  Row 166  |  condition=USStimulation  project=USS
+           func session : ses-240920
+           anat session : ses-240916
+           functional_path : /data03/USS/Data_analysis/animal2/ses-240920/run-171217/
+           anatomical_path : /data03/USS/Data_analysis/animal2/ses-240916/run-141934/
+
+  Row 167  |  condition=USStimulation  project=USS
+           func session : ses-241209
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal3/ses-241209/run-173809/
+           anatomical_path : /data03/USS/Data_analysis/animal3/ses-241206/run-125538/
+
+  Row 168  |  condition=USStimulation  project=USS
+           func session : ses-241209
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal3/ses-241209/run-180013/
+           anatomical_path : /data03/USS/Data_analysis/animal3/ses-241206/run-125538/
+
+  Row 169  |  condition=USStimulation  project=USS
+           func session : ses-241209
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal3/ses-241209/run-182002/
+           anatomical_path : /data03/USS/Data_analysis/animal3/ses-241206/run-125538/
+
+  Row 170  |  condition=USStimulation  project=USS
+           func session : ses-241209
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal4/ses-241209/run-144141/
+           anatomical_path : /data03/USS/Data_analysis/animal4/ses-241206/run-153342/
+
+  Row 171  |  condition=USStimulation  project=USS
+           func session : ses-241209
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal4/ses-241209/run-151140/
+           anatomical_path : /data03/USS/Data_analysis/animal4/ses-241206/run-153342/
+
+  Row 172  |  condition=USStimulation  project=USS
+           func session : ses-241209
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal4/ses-241209/run-153048/
+           anatomical_path : /data03/USS/Data_analysis/animal4/ses-241206/run-153342/
+
+  Row 173  |  condition=USStimulation  project=USS
+           func session : ses-241210
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal3/ses-241210/run-122338/
+           anatomical_path : /data03/USS/Data_analysis/animal3/ses-241206/run-125538/
+
+  Row 174  |  condition=USStimulation  project=USS
+           func session : ses-241210
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal3/ses-241210/run-124702/
+           anatomical_path : /data03/USS/Data_analysis/animal3/ses-241206/run-125538/
+
+  Row 175  |  condition=USStimulation  project=USS
+           func session : ses-241210
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal3/ses-241210/run-130646/
+           anatomical_path : /data03/USS/Data_analysis/animal3/ses-241206/run-125538/
+
+  Row 176  |  condition=USStimulation  project=USS
+           func session : ses-241210
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal4/ses-241210/run-164455/
+           anatomical_path : /data03/USS/Data_analysis/animal4/ses-241206/run-153342/
+
+  Row 177  |  condition=USStimulation  project=USS
+           func session : ses-241210
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal4/ses-241210/run-170916/
+           anatomical_path : /data03/USS/Data_analysis/animal4/ses-241206/run-153342/
+
+  Row 178  |  condition=USStimulation  project=USS
+           func session : ses-241210
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal4/ses-241210/run-172834/
+           anatomical_path : /data03/USS/Data_analysis/animal4/ses-241206/run-153342/
+
+  Row 179  |  condition=USStimulation  project=USS
+           func session : ses-241211
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal3/ses-241211/run-155426/
+           anatomical_path : /data03/USS/Data_analysis/animal3/ses-241206/run-125538/
+
+  Row 180  |  condition=USStimulation  project=USS
+           func session : ses-241211
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal3/ses-241211/run-164719/
+           anatomical_path : /data03/USS/Data_analysis/animal3/ses-241206/run-125538/
+
+  Row 181  |  condition=USStimulation  project=USS
+           func session : ses-241213
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal3/ses-241213/run-122759/
+           anatomical_path : /data03/USS/Data_analysis/animal3/ses-241206/run-125538/
+
+  Row 182  |  condition=USStimulation  project=USS
+           func session : ses-241213
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal3/ses-241213/run-125227/
+           anatomical_path : /data03/USS/Data_analysis/animal3/ses-241206/run-125538/
+
+  Row 183  |  condition=USStimulation  project=USS
+           func session : ses-241213
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal3/ses-241213/run-131305/
+           anatomical_path : /data03/USS/Data_analysis/animal3/ses-241206/run-125538/
+
+  Row 184  |  condition=USStimulation  project=USS
+           func session : ses-241211
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal4/ses-241211/run-120846/
+           anatomical_path : /data03/USS/Data_analysis/animal4/ses-241206/run-153342/
+
+  Row 185  |  condition=USStimulation  project=USS
+           func session : ses-241211
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal4/ses-241211/run-124120/
+           anatomical_path : /data03/USS/Data_analysis/animal4/ses-241206/run-153342/
+
+  Row 186  |  condition=USStimulation  project=USS
+           func session : ses-241211
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal4/ses-241211/run-130027/
+           anatomical_path : /data03/USS/Data_analysis/animal4/ses-241206/run-153342/
+
+  Row 187  |  condition=USStimulation  project=USS
+           func session : ses-241213
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal4/ses-241213/run-162050/
+           anatomical_path : /data03/USS/Data_analysis/animal4/ses-241206/run-153342/
+
+  Row 188  |  condition=USStimulation  project=USS
+           func session : ses-241213
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal4/ses-241213/run-164339/
+           anatomical_path : /data03/USS/Data_analysis/animal4/ses-241206/run-153342/
+
+  Row 189  |  condition=USStimulation  project=USS
+           func session : ses-241213
+           anat session : ses-241206
+           functional_path : /data03/USS/Data_analysis/animal4/ses-241213/run-170236/
+           anatomical_path : /data03/USS/Data_analysis/animal4/ses-241206/run-153342/
+
+  Row 193  |  condition=USStimulation  project=USS
+           func session : ses-250128
+           anat session : ses-250127
+           functional_path : /data03/USS/Data_analysis/animal5/ses-250128/run-145540/
+           anatomical_path : /data03/USS/Data_analysis/animal5/ses-250127/run-122411/
+
+  Row 194  |  condition=USStimulation  project=USS
+           func session : ses-250128
+           anat session : ses-250127
+           functional_path : /data03/USS/Data_analysis/animal5/ses-250128/run-152058/
+           anatomical_path : /data03/USS/Data_analysis/animal5/ses-250127/run-122411/
+
+  Row 195  |  condition=USStimulation  project=USS
+           func session : ses-250128
+           anat session : ses-250127
+           functional_path : /data03/USS/Data_analysis/animal5/ses-250128/run-154033/
+           anatomical_path : /data03/USS/Data_analysis/animal5/ses-250127/run-122411/
+
+  Row 196  |  condition=USStimulation  project=USS
+           func session : ses-250129
+           anat session : ses-250127
+           functional_path : /data03/USS/Data_analysis/animal5/ses-250129/run-155806/
+           anatomical_path : /data03/USS/Data_analysis/animal5/ses-250127/run-122411/
+
+  Row 197  |  condition=USStimulation  project=USS
+           func session : ses-250129
+           anat session : ses-250127
+           functional_path : /data03/USS/Data_analysis/animal5/ses-250129/run-162039/
+           anatomical_path : /data03/USS/Data_analysis/animal5/ses-250127/run-122411/
+
+  Row 198  |  condition=USStimulation  project=USS
+           func session : ses-250129
+           anat session : ses-250127
+           functional_path : /data03/USS/Data_analysis/animal5/ses-250129/run-164045/
+           anatomical_path : /data03/USS/Data_analysis/animal5/ses-250127/run-122411/
+
+  Row 199  |  condition=USStimulation  project=USS
+           func session : ses-250131
+           anat session : ses-250127
+           functional_path : /data03/USS/Data_analysis/animal5/ses-250131/run-120417/
+           anatomical_path : /data03/USS/Data_analysis/animal5/ses-250127/run-122411/
+
+  Row 200  |  condition=USStimulation  project=USS
+           func session : ses-250131
+           anat session : ses-250127
+           functional_path : /data03/USS/Data_analysis/animal5/ses-250131/run-122648/
+           anatomical_path : /data03/USS/Data_analysis/animal5/ses-250127/run-122411/
+
+  Row 201  |  condition=USStimulation  project=USS
+           func session : ses-250131
+           anat session : ses-250127
+           functional_path : /data03/USS/Data_analysis/animal5/ses-250131/run-124742/
+           anatomical_path : /data03/USS/Data_analysis/animal5/ses-250127/run-122411/
+
+  Row 203  |  condition=ElectrodeTest  project=USS
+           func session : ses-240904
+           anat session : ses-240903
+           functional_path : /data03/USS/Data_analysis/animal1/ses-240904/run-143907/
+           anatomical_path : /data03/USS/Data_analysis/animal1/ses-240903/run-153439/
+
+  Row 205  |  condition=ElectrodeTest  project=USS
+           func session : ses-240904
+           anat session : ses-240903
+           functional_path : /data03/USS/Data_analysis/animal2/ses-240904/run-112838/
+           anatomical_path : /data03/USS/Data_analysis/animal2/ses-240903/run-174638/
+
+  Row 206  |  condition=ElectrodeTest  project=USS
+           func session : ses-240904
+           anat session : ses-240903
+           functional_path : /data03/USS/Data_analysis/animal1/ses-240904/run-135955/
+           anatomical_path : /data03/USS/Data_analysis/animal1/ses-240903/run-153439/
+
+  Row 207  |  condition=ElectrodeTest  project=USS
+           func session : ses-240904
+           anat session : ses-240903
+           functional_path : /data03/USS/Data_analysis/animal2/ses-240904/run-110108/
+           anatomical_path : /data03/USS/Data_analysis/animal2/ses-240903/run-174638/
+

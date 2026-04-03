@@ -30,10 +30,10 @@ xlabel('Time (s)');
 ylabel('X shift (pixels)');
 title('Horizontal Motion');
 grid on;
-ylim_x = max(abs(motionParams(:,1))) * 1.2;
-if ylim_x > 0
-    ylim([-ylim_x, ylim_x]);
-end
+% Robust axis limit: 99th percentile prevents spikes from dominating the scale.
+% Falls back to a minimum of 0.05 px so the axis is readable even when motion is ~0.
+ylim_x = max(prctile(abs(motionParams(:,1)), 99) * 1.5, 0.05);
+ylim([-ylim_x, ylim_x]);
 
 % Plot Y translation
 subplot(3,1,2);
@@ -42,10 +42,8 @@ xlabel('Time (s)');
 ylabel('Y shift (pixels)');
 title('Vertical Motion');
 grid on;
-ylim_y = max(abs(motionParams(:,2))) * 1.2;
-if ylim_y > 0
-    ylim([-ylim_y, ylim_y]);
-end
+ylim_y = max(prctile(abs(motionParams(:,2)), 99) * 1.5, 0.05);
+ylim([-ylim_y, ylim_y]);
 
 % Plot total displacement
 subplot(3,1,3);

@@ -1,0 +1,24 @@
+======================================================================
+Functional Path Construction Check
+======================================================================
+
+CSV file     : original_Datapath_location.csv
+Run column   : func_run_id
+Root column  : orig_root
+Total rows   : 206
+
+----------------------------------------------------------------------
+[A] Suffix check: Data_analysis/<subject>/<session>/<run>
+    Mismatches : 0
+----------------------------------------------------------------------
+
+    OK: All functional_path suffixes match.
+
+----------------------------------------------------------------------
+[B] Full path reconstruction check:
+    /{orig_root}/{project}/Data_analysis/{subject_id}/{session_id}/{func_run_id}
+    Mismatches : 0
+----------------------------------------------------------------------
+
+    OK: functional_path is fully redundant — can be built from columns.
+

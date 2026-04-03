@@ -2,40 +2,51 @@ function runInfo = load_run_info(runID, csvFilename)
 % LOAD_RUN_INFO - Load run information from CSV and construct all paths
 %
 % Usage:
-%   runInfo = load_run_info('run-115047', 'fUSI_data_location_LOCAL.csv')
+%   runInfo = load_run_info('run-115047', 'fUSI_data_location_STORM.csv')
 %
 % Description:
 %   Reads the specified CSV file, finds the matching run, and constructs
 %   all necessary paths for data collection and analysis directories.
 %
+%   Compatible with the CSV produced by 00_DATA_MANAGEMENT/03_CP_DATA/
+%   cp_fUSI_orig2dest.py (copy tracking CSV).
+%
+% Required CSV columns:
+%   func_run_id     - Functional run identifier     (e.g. run-115047)
+%   project         - Project folder name           (e.g. fUSIMethodsPaper)
+%   subject_id      - Subject identifier            (e.g. sub-methods02)
+%   session_id      - Session identifier            (e.g. ses-231215)
+%   anatomical_path - Full ORIGINAL path to anat Data_analysis folder
+%                     (used only to extract anat subject / session / run)
+%   dest_root       - Destination root              (e.g. /data03/fUSIMethodsPaper_LC)
+%
+% Optional CSV columns (present but not used for path construction):
+%   TOCOPY, COPIED, condition, orig_root
+%
 % Inputs:
-%   runID       - Run identifier (e.g., 'run-115047') [REQUIRED]
-%   csvFilename - Name of CSV file to use (e.g., 'fUSI_data_location_LOCAL.csv') [REQUIRED]
-%                 This should be passed from fusi_pipeline_launcher.m
+%   runID       - Run identifier (e.g., 'run-115047')  [REQUIRED]
+%   csvFilename - CSV filename in launcher directory   [REQUIRED]
 %
 % Output:
 %   runInfo - Struct with fields:
-%       .experiment    - Experiment name
-%       .func_run      - Functional run ID
+%       .project       - Project name
+%       .condition     - Condition (if present in CSV, else '')
+%       .subject_id    - Subject ID
 %       .session_id    - Session ID
-%       .anatomic_run  - Anatomical run ID
-%       .data_root     - Root data directory
+%       .func_run_id   - Functional run ID
+%       .dest_root     - Destination root path
 %       .paths         - Struct with all constructed paths:
-%           .func_collection   - Functional data collection directory
-%           .func_analysis     - Functional data analysis directory
-%           .anat_collection   - Anatomical data collection directory
-%           .anat_analysis     - Anatomical data analysis directory
-%           .atlas             - Atlas directory
-%
-% Example:
-%   runInfo = load_run_info('run-115047', 'fUSI_data_location_STORM.csv')
+%           .func_collection   - Functional Data_collection directory
+%           .func_analysis     - Functional Data_analysis directory
+%           .anat_collection   - Anatomical Data_collection directory
+%           .anat_analysis     - Anatomical Data_analysis directory
+%           .atlas             - Atlas directory (relative to scripts root)
 
-% Validate inputs
+%% Validate inputs
 if nargin < 2 || isempty(csvFilename)
     error('load_run_info:MissingCSVFilename', ...
         'CSV filename must be provided. Configure CSV_FILENAME in fusi_pipeline_launcher.m');
 end
-
 if nargin < 1 || isempty(runID)
     error('load_run_info:MissingRunID', ...
         'Run ID must be provided (e.g., ''run-115047'')');
@@ -43,90 +54,104 @@ end
 
 %% Read CSV file
 
-% Get full path to CSV file (should be in same directory as this function)
+% CSV lives in the launcher directory (one level above lib/)
 launcherDir = fileparts(fileparts(mfilename('fullpath')));
 csvPath = fullfile(launcherDir, csvFilename);
 
-% Check if CSV file exists
 if ~isfile(csvPath)
     error('load_run_info:CSVFileNotFound', ...
         'CSV file not found: %s\nCheck CSV_FILENAME in fusi_pipeline_launcher.m', csvPath);
 end
 
-% Read CSV file
 try
     csvTable = readtable(csvPath, 'Delimiter', ',', 'ReadVariableNames', true);
 catch ME
     error('load_run_info:CSVReadError', ...
-        'Failed to read CSV file: %s\nError: %s', csvPath, ME.message);
+        'Failed to read CSV: %s\nError: %s', csvPath, ME.message);
 end
 
 % Validate required columns
-requiredCols = {'experiment', 'session_id', 'func_run', 'anatomic_run', 'data_root'};
+requiredCols = {'func_run_id', 'project', 'subject_id', 'session_id', ...
+                'anatomical_path', 'dest_root'};
 missingCols = setdiff(requiredCols, csvTable.Properties.VariableNames);
 if ~isempty(missingCols)
     error('load_run_info:MissingColumns', ...
-        'CSV file missing required columns: %s', strjoin(missingCols, ', '));
+        'CSV file missing required columns: %s\n(Got: %s)', ...
+        strjoin(missingCols, ', '), ...
+        strjoin(csvTable.Properties.VariableNames, ', '));
 end
 
 %% Find matching run
 
-% Find row where func_run matches runID
-matchIdx = strcmp(csvTable.func_run, runID);
+matchIdx = strcmp(csvTable.func_run_id, runID);
 
 if ~any(matchIdx)
     error('load_run_info:RunNotFound', ...
-        'Run ID ''%s'' not found in CSV file: %s\nAvailable runs: %s', ...
-        runID, csvFilename, strjoin(csvTable.func_run, ', '));
+        'Run ''%s'' not found in %s\nAvailable runs: %s', ...
+        runID, csvFilename, strjoin(csvTable.func_run_id, ', '));
 end
-
 if sum(matchIdx) > 1
     warning('load_run_info:MultipleMatches', ...
         'Multiple entries found for run %s. Using first match.', runID);
 end
 
-% Get the first matching row
 rowIdx = find(matchIdx, 1);
 
 %% Extract run information
 
 runInfo = struct();
-runInfo.experiment = char(csvTable.experiment(rowIdx));
-runInfo.session_id = char(csvTable.session_id(rowIdx));
-runInfo.func_run = char(csvTable.func_run(rowIdx));
-runInfo.anatomic_run = char(csvTable.anatomic_run(rowIdx));
-runInfo.data_root = char(csvTable.data_root(rowIdx));
+runInfo.project     = char(csvTable.project(rowIdx));
+runInfo.subject_id  = char(csvTable.subject_id(rowIdx));
+runInfo.session_id  = char(csvTable.session_id(rowIdx));
+runInfo.func_run_id = char(csvTable.func_run_id(rowIdx));
+runInfo.dest_root   = char(csvTable.dest_root(rowIdx));
 
-% Construct paths
+% Optional: condition
+if ismember('condition', csvTable.Properties.VariableNames)
+    runInfo.condition = char(csvTable.condition(rowIdx));
+else
+    runInfo.condition = '';
+end
+
+%% Parse anatomical_path to extract anat subject / session / run
+%
+% anatomical_path is the ORIGINAL (pre-copy) full path, e.g.:
+%   /data06/fUSIMethodsPaper/Data_analysis/sub-methods02/ses-231215/run-113409/
+%
+% The last 3 non-empty path components are always:
+%   subject_id / session_id / run_id
+% — regardless of which project/host they come from.
+
+anatPathRaw = strtrim(char(csvTable.anatomical_path(rowIdx)));
+anatParts   = strsplit(anatPathRaw, '/');
+anatParts   = anatParts(~cellfun(@isempty, anatParts));  % strip empty tokens
+
+if length(anatParts) < 3
+    error('load_run_info:BadAnatPath', ...
+        'Cannot parse anatomical_path (need ≥ 3 components): %s', anatPathRaw);
+end
+
+anat_sub = anatParts{end-2};   % e.g. sub-methods02
+anat_ses = anatParts{end-1};   % e.g. ses-231215
+anat_run = anatParts{end};     % e.g. run-113409
+
+%% Construct paths
+
 runInfo.paths = struct();
 
-% Functional paths
-runInfo.paths.func_collection = fullfile(...
-    runInfo.data_root, ...
-    'Data_collection', ...
-    runInfo.session_id, ...
-    runInfo.func_run);
+runInfo.paths.func_collection = fullfile(runInfo.dest_root, 'Data_collection', ...
+    runInfo.subject_id, runInfo.session_id, runInfo.func_run_id);
 
-runInfo.paths.func_analysis = fullfile(...
-    runInfo.data_root, ...
-    'Data_analysis', ...
-    runInfo.session_id, ...
-    runInfo.func_run);
+runInfo.paths.func_analysis = fullfile(runInfo.dest_root, 'Data_analysis', ...
+    runInfo.subject_id, runInfo.session_id, runInfo.func_run_id);
 
-% Anatomical paths
-runInfo.paths.anat_collection = fullfile(...
-    runInfo.data_root, ...
-    'Data_collection', ...
-    runInfo.session_id, ...
-    runInfo.anatomic_run);
+runInfo.paths.anat_collection = fullfile(runInfo.dest_root, 'Data_collection', ...
+    anat_sub, anat_ses, anat_run);
 
-runInfo.paths.anat_analysis = fullfile(...
-    runInfo.data_root, ...
-    'Data_analysis', ...
-    runInfo.session_id, ...
-    runInfo.anatomic_run);
+runInfo.paths.anat_analysis = fullfile(runInfo.dest_root, 'Data_analysis', ...
+    anat_sub, anat_ses, anat_run);
 
-% Atlas path (one directory up from launcher)
+% Atlas: one directory above launcher directory
 runInfo.paths.atlas = fullfile(launcherDir, '..', 'allen_brain_atlas');
 
 end

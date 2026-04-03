@@ -35,7 +35,7 @@ function fusi_pipeline_launcher(runID)
 % - 'fUSI_data_location_STORM.csv' for remote server
 % - 'fUSI_data_location_LOCAL.csv' for local machine
 
-CSV_FILENAME = 'fUSI_data_location_LOCAL.csv';  % <-- EDIT THIS LINE
+CSV_FILENAME = 'fUSI_data_location_STORM.csv';  % <-- EDIT THIS LINE
 
 %% Setup
 fprintf('\n========================================\n');
@@ -57,10 +57,9 @@ catch ME
     error('Failed to load run info: %s', ME.message);
 end
 
-fprintf('  ✓ Experiment: %s\n', runInfo.experiment);
-fprintf('  ✓ Session: %s\n', runInfo.session_id);
-fprintf('  ✓ Anatomical run: %s\n', runInfo.anatomic_run);
-fprintf('  ✓ Data root: %s\n\n', runInfo.data_root);
+fprintf('  ✓ Project: %s\n', runInfo.project);
+fprintf('  ✓ Subject / Session: %s / %s\n', runInfo.subject_id, runInfo.session_id);
+fprintf('  ✓ Dest root: %s\n\n', runInfo.dest_root);
 
 %% Step 2: Check file availability for each pipeline stage
 fprintf('→ Checking pipeline stage status...\n\n');
@@ -217,11 +216,11 @@ function run_analysis(runInfo)
     fprintf('=== Running Stage 04: Analysis ===\n\n');
     
     % Check experiment type FIRST
-    if ~strcmp(runInfo.experiment, 'MethodsPaper')
-        fprintf('❌ This analysis cannot be carried out on %s\n', runInfo.func_run);
-        fprintf('   Analysis type: MethodPaper\n');
-        fprintf('   Run experiment type: %s\n', runInfo.experiment);
-        return;  % Exit early
+    if ~strcmp(runInfo.project, 'fUSIMethodsPaper')
+        fprintf('❌ This analysis cannot be carried out on %s\n', runInfo.func_run_id);
+        fprintf('   Analysis requires project: fUSIMethodsPaper\n');
+        fprintf('   This run project: %s\n', runInfo.project);
+        return;
     end
     
     % Add analysis stage directory to path

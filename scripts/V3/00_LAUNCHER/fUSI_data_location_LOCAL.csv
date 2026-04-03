@@ -1,3 +1,2 @@
-experiment,session_id,func_run,anatomic_run,data_root
-MethodsPaper,ses-231215,run-115047,run-113409,/Users/leonardo/Dropbox/fUSI/fUSI_TUT/data
-Shock,ses-240103,run-140517,run-142553,/Users/leonardo/Dropbox/fUSI/fUSI_TUT/data
+experiment,project_id,session_id,func_run,anatomic_run,data_root
+MethodsPaper,sub-methods02,ses-231215,run-115047,run-113409,/Users/leonardo/Dropbox/fUSI/fUSI_TUT/data

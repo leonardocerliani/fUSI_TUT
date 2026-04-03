@@ -1,0 +1,73 @@
+======================================================================
+fUSI Data Copy Report
+======================================================================
+
+Timestamp  : 2026-04-02 13:14:02
+func_run_id: run-152539
+project    : fUSIMethodsPaper
+condition  : VisualTest
+subject_id : sub-methods02
+session_id : ses-231218
+
+----------------------------------------------------------------------
+[1] FUNCTIONAL Data_collection
+    Source : /data06/fUSIMethodsPaper/Data_collection/sub-methods02/ses-231218/run-152539
+    Dest   : /data03/fUSIMethodsPaper_LC/Data_collection/sub-methods02/ses-231218/run-152539
+    Total  : 11 file(s) | Copied: 8 | Not copied: 3
+
+  COPIED (8 file(s))
+    + DAQ.csv
+    + FUSI_data/L22-14_PlaneWave_FUSI_data.mat
+    + FUSI_data/fUS_block_PDI_float.bin
+    + FUSI_data/post_L22-14_PlaneWave_FUSI_data.mat
+    + GSensor.csv
+    + RunningWheel.csv
+    + TTL20231218T152533.csv
+    + VisualStimulation.csv
+
+  NOT COPIED (3 file(s))
+    - __SUCCESS
+    - methods02_2025-11-17_033_session.json
+    - settings.json
+
+----------------------------------------------------------------------
+[2] ANATOMICAL Data_collection (full copy)
+    Source : /data06/fUSIMethodsPaper/Data_collection/sub-methods02/ses-231218/run-144557
+    Dest   : /data03/fUSIMethodsPaper_LC/Data_collection/sub-methods02/ses-231218/run-144557
+    Total  : 9 file(s) | Copied: 9 | Not copied: 0
+
+  COPIED (9 file(s))
+    + FUSI_data/L22-14_PlaneWave_FUSI_data.mat
+    + FUSI_data/fUS_block_PDI_float.bin
+    + FUSI_data/post_L22-14_PlaneWave_FUSI_data.mat
+    + MotorScan.csv
+    + NIDAQ.csv
+    + TTL20231218T144549.csv
+    + __SUCCESS
+    + gui_settings.json
+    + methods02_2025-11-17_032_session.json
+
+  NOT COPIED (0 file(s))
+    (none)
+
+----------------------------------------------------------------------
+[3] ANATOMICAL Data_analysis
+    Source : /data06/fUSIMethodsPaper/Data_analysis/sub-methods02/ses-231218/run-144557
+    Dest   : /data03/fUSIMethodsPaper_LC/Data_analysis/sub-methods02/ses-231218/run-144557
+    Total  : 11 file(s) | Copied: 2 | Not copied: 9
+
+  COPIED (2 file(s))
+    + Transformation.mat
+    + anatomic.mat
+
+  NOT COPIED (9 file(s))
+    - Anatomic.nii
+    - DispFieldA2I.mat
+    - DispFieldI2A.mat
+    - RegAnatomic.nii
+    - RegDeformAnatomic.nii
+    - RegDeformAtlas.nii
+    - RegSlice10.nii
+    - Transformation20240124T220753.mat
+    - Transformation20240421T151621.mat
+

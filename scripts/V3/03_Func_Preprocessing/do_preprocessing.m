@@ -37,7 +37,7 @@ function do_preprocessing(anat_analysis_path, func_analysis_path, atlasPath)
 % See also: load_anat_and_func, Atlas2Individual, resamplePDI, DCThighpass, fillmissingTime
 
 % Add src directory to path for helper functions
-addpath('src');
+addpath(fullfile(fileparts(mfilename('fullpath')), 'src'));
 
 %% Handle optional input arguments
 
@@ -55,9 +55,9 @@ end
 
 %% ONLY FOR TESTING!!! - COMMENT OUT WHEN USING WITH LAUNCHER
 
-% anat_analysis_path='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/data/Data_analysis/ses-231215/run-113409-anat';
-% func_analysis_path='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/data/Data_analysis/ses-231215/run-115047-func-visual';
-% atlasPath='/Users/leonardo/Dropbox/fUSI/fUSI_TUT/scripts/V2/allen_brain_atlas';
+% anat_analysis_path='/data03/fUSIMethodsPaper_LC/Data_analysis/sub-methods02/ses-231215/run-113409';
+% func_analysis_path='/data03/fUSIMethodsPaper_LC/Data_analysis/sub-methods02/ses-231215/run-115047';
+% atlasPath='/data00/leonardo/fUSI_TUT/scripts/V3/allen_brain_atlas/';
 
 
 
@@ -156,8 +156,17 @@ for k = 1:nFrames
     cPDI(:,:,k) = imwarp(PDI.PDI(:,:,k), tform, 'OutputView', imref2d(size(ref)));
     
     % Store motion parameters (translation in pixels)
-    motionParams(k,1) = tform.T(3,1);  % X translation
-    motionParams(k,2) = tform.T(3,2);  % Y translation
+    % Version-agnostic translation extraction.
+    % isprop() is unreliable for MATLAB value classes, so we use try/catch:
+    %   - New-style objects (transltform2d, rigidtform2d — R2022b+): use .Translation
+    %   - Legacy affine2d (R2025a on some datasets): use .T(3,1:2)
+    try
+        motionParams(k,1) = tform.Translation(1);  % X translation
+        motionParams(k,2) = tform.Translation(2);  % Y translation
+    catch
+        motionParams(k,1) = tform.T(3,1);          % X translation (legacy)
+        motionParams(k,2) = tform.T(3,2);          % Y translation (legacy)
+    end
     
     % Update waitbar periodically
     if mod(k, 100) == 0 || k == nFrames

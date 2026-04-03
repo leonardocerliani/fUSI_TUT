@@ -1,0 +1,81 @@
+======================================================================
+fUSI Data Copy Report
+======================================================================
+
+Timestamp  : 2026-04-02 13:57:48
+func_run_id: run-125448
+project    : fUSIMethodsPaper
+condition  : VisualTest
+subject_id : sub-methods03
+session_id : ses-240104
+
+----------------------------------------------------------------------
+[1] FUNCTIONAL Data_collection
+    Source : /data06/fUSIMethodsPaper/Data_collection/sub-methods03/ses-240104/run-125448
+    Dest   : /data03/fUSIMethodsPaper_LC/Data_collection/sub-methods03/ses-240104/run-125448
+    Total  : 16 file(s) | Copied: 9 | Not copied: 7
+
+  COPIED (9 file(s))
+    + DAQ.csv
+    + FUSI_data/L22-14_PlaneWave_FUSI_data.mat
+    + FUSI_data/fUS_block_PDI_float.bin
+    + GSensor.csv
+    + RunningWheel.csv
+    + TTL20240104T125441.csv
+    + VisualStimulation.csv
+    + body_camera.csv
+    + pupil_camera.csv
+
+  NOT COPIED (7 file(s))
+    - FUSI_data/post_L22-14_PlaneWave_FUSI_dataX.mat
+    - FUS_EXPERIMENT
+    - __SUCCESS
+    - body_camera.avi
+    - methods03_2025-11-17_058_session.json
+    - pupil_camera.avi
+    - settings.json
+
+----------------------------------------------------------------------
+[2] ANATOMICAL Data_collection (full copy)
+    Source : /data06/fUSIMethodsPaper/Data_collection/sub-methods03/ses-240104/run-123823
+    Dest   : /data03/fUSIMethodsPaper_LC/Data_collection/sub-methods03/ses-240104/run-123823
+    Total  : 9 file(s) | Copied: 9 | Not copied: 0
+
+  COPIED (9 file(s))
+    + FUSI_data/L22-14_PlaneWave_FUSI_data.mat
+    + FUSI_data/fUS_block_PDI_float.bin
+    + FUSI_data/post_L22-14_PlaneWave_FUSI_data.mat
+    + MotorScan.csv
+    + NIDAQ.csv
+    + TTL20240104T123816.csv
+    + __SUCCESS
+    + gui_settings.json
+    + methods03_2025-11-17_057_session.json
+
+  NOT COPIED (0 file(s))
+    (none)
+
+----------------------------------------------------------------------
+[3] ANATOMICAL Data_analysis
+    Source : /data06/fUSIMethodsPaper/Data_analysis/sub-methods03/ses-240104/run-123823
+    Dest   : /data03/fUSIMethodsPaper_LC/Data_analysis/sub-methods03/ses-240104/run-123823
+    Total  : 14 file(s) | Copied: 2 | Not copied: 12
+
+  COPIED (2 file(s))
+    + Transformation.mat
+    + anatomic.mat
+
+  NOT COPIED (12 file(s))
+    - Anatomic.nii
+    - DispFieldA2I.mat
+    - DispFieldI2A.mat
+    - RegAnatomic.nii
+    - RegDeformAnatomic.nii
+    - RegDeformAtlas.nii
+    - RegSlice11.nii
+    - RegSlice13.nii
+    - RegSlice9.nii
+    - Transformation20240125T110425.mat
+    - Transformation20240421T152715.mat
+    - Transformation20240421T153316.mat
+
