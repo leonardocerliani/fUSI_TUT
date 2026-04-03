@@ -150,7 +150,15 @@ h = waitbar(0, 'Performing motion correction...');
 % Correct each frame
 for k = 1:nFrames
     % Estimate rigid transformation (translation only)
-    tform = imregcorr(PDI.PDI(:,:,k), ref, 'translation');
+
+    % imregcorr in v2022 has very strict thresholds and returns almost no
+    % detected motion. In v2025 this function is improved and uses gradient
+    % correlation. We implement our version of phase correlation
+    % which gives identical results in both versions
+
+    % tform = imregcorr(PDI.PDI(:,:,k), ref, 'translation');
+
+    tform = phase_correlation(PDI.PDI(:,:,k), ref);
     
     % Apply transformation
     cPDI(:,:,k) = imwarp(PDI.PDI(:,:,k), tform, 'OutputView', imref2d(size(ref)));
